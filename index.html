@@ -378,7 +378,20 @@ function show(){const c=ctl();if(!c)return;c.classList.add("on");clearTimeout(T)
 function tog(){if(TV)return;const c=ctl();if(!c)return;c.classList.contains("on")?c.classList.remove("on"):show()}
 function skip(d){if(!V)return;V.currentTime=Math.max(0,Math.min(V.duration||1e9,V.currentTime+d));show();flash((d>0?"+":"−")+"10s",d>0?"r":"l")}
 function vp(on){if(!V)return;on?V.play():V.pause();flash(on?"▶ Phát":"⏸ Tạm dừng",on?"r":"l")}
-function pip(){if(!V)return;if(document.pictureInPictureElement)document.exitPictureInPicture();else if(V.requestPictureInPicture)V.requestPictureInPicture().catch(()=>{});else V.webkitSetPresentationMode?.(V.webkitPresentationMode==="picture-in-picture"?"inline":"picture-in-picture")}
+async function pip(){
+ if(!V)return;
+ try{
+  if(document.pictureInPictureElement){await document.exitPictureInPicture();return}
+  if(V.webkitPresentationMode==="picture-in-picture"){V.webkitSetPresentationMode("inline");return}
+  if(V.readyState<1){toast("Đợi video tải xong rồi bấm lại");return}
+  if(document.pictureInPictureEnabled&&V.requestPictureInPicture&&!V.disablePictureInPicture){await V.requestPictureInPicture();return}
+  if(V.webkitSetPresentationMode){V.webkitSetPresentationMode("picture-in-picture");return}
+  toast("Trình duyệt này không hỗ trợ PiP")
+ }catch(err){
+  try{if(V.webkitSetPresentationMode){V.webkitSetPresentationMode("picture-in-picture");return}}catch(x){}
+  toast("Không mở được PiP ("+(err&&err.name||"lỗi")+"). Hãy bấm phát trước rồi thử lại.")
+ }
+}
 function fs(){if(document.fullscreenElement||document.webkitFullscreenElement){(document.exitFullscreen||document.webkitExitFullscreen).call(document);screen.orientation?.unlock?.();return}
  const f=pw.requestFullscreen||pw.webkitRequestFullscreen;if(f){const r=f.call(pw);r?.then?.(()=>screen.orientation?.lock?.("landscape")?.catch?.(()=>{}));r?.catch?.(()=>{})}else V?.webkitEnterFullscreen?.()}
 const phBtn=t=>`<div class="ph"><button class="btn pri" id="dk">${t}</button></div>`;
@@ -396,7 +409,7 @@ function bindV(e){
  sk.onchange=()=>{drag=false};
  v.onerror=fb;const to=setTimeout(()=>{if(V===v&&v.readyState<2)fb()},12000);v.onloadeddata=()=>clearTimeout(to);
  if(!document.pictureInPictureEnabled&&!v.webkitSetPresentationMode)pw.querySelector('[data-a=pip]').style.display="none";
- if(window.Hls&&Hls.isSupported()){hls=new Hls();hls.loadSource(e.m3u8);hls.attachMedia(v);hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)fb()})}else v.src=e.m3u8;
+ if(v.webkitSetPresentationMode&&v.canPlayType("application/vnd.apple.mpegurl"))v.src=e.m3u8;else if(window.Hls&&Hls.isSupported()){hls=new Hls();hls.loadSource(e.m3u8);hls.attachMedia(v);hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)fb()})}else v.src=e.m3u8;
  v.play().catch(()=>{});show();
 }
 function play(fe){
