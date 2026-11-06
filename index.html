@@ -51,8 +51,8 @@ nav button{white-space:nowrap;background:var(--s1);border:1px solid var(--line);
 nav button:hover{color:var(--text)}
 nav button.on{background:#fff;color:#0a0c14;border-color:#fff;font-weight:600}
 h2{font-size:22px;font-weight:700;letter-spacing:-.4px;margin:26px 0 16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:22px 16px}
-.card{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:22px 16px}
+.card{display:block;min-width:0}
 .poster{position:relative;aspect-ratio:2/3;background:var(--s1);border-radius:var(--r);overflow:hidden;transition:.3s cubic-bezier(.2,.8,.2,1)}
 .poster img{width:100%;height:100%;object-fit:cover;display:block}
 .poster:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#000c,transparent 45%);opacity:0;transition:.25s}
@@ -164,16 +164,16 @@ body{padding-bottom:84px}
 .more{color:var(--a2);font-size:14px;font-weight:500;white-space:nowrap}
 .rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;margin-inline:-16px;padding:4px 16px 14px}
 .rail::-webkit-scrollbar,.gch::-webkit-scrollbar{display:none}
-.rail .card{flex:0 0 150px;scroll-snap-align:start}
+.rail .card{flex:0 0 128px;width:128px;min-width:0;scroll-snap-align:start}
 .gch{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 10px;padding:0 16px}
 .gch .chip{white-space:nowrap;border-radius:99px}
 header,.sov{padding-top:calc(12px + env(safe-area-inset-top,0px))}
 .top{height:calc(84px + env(safe-area-inset-top,0px))}
-@media(max-width:700px){.rail .card{flex-basis:122px}}
+@media(max-width:700px){.rail .card{flex-basis:104px;width:104px}.card .t{font-size:13px}.card .o{font-size:11.5px}.rail{gap:10px}}
 @media(max-width:700px){
  header{flex-wrap:wrap;gap:10px}.search{order:3;flex-basis:100%;max-width:none;margin:0}.seg{margin-left:auto}
  .hero .in{flex-direction:column;align-items:flex-start;padding-bottom:36px}.hero img{display:none}
- .grid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:18px 10px}
+ .grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:18px 10px}
  .info{grid-template-columns:110px 1fr;gap:16px}.hero{min-height:480px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -189,7 +189,6 @@ header,.sov{padding-top:calc(12px + env(safe-area-inset-top,0px))}
 <a href="#/" data-t="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Trang chủ</a>
 <a href="#/phim-bo" data-t="phim-bo"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Phim bộ</a>
 <a href="#/phim-le" data-t="phim-le"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16M16 4v16M3 12h18"/></svg>Phim lẻ</a>
-<a href="#/hoat-hinh" data-t="hoat-hinh"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14c1 2 2.5 3 4 3s3-1 4-3M9 9.5h.01M15 9.5h.01"/></svg>Hoạt hình</a>
 <a href="#/the-loai" data-t="kham"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>Thể loại</a>
 <a href="#/ca-nhan" data-t="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Cá nhân</a>
 </nav>
@@ -258,7 +257,7 @@ async function list(){
  const app=$("#app");
  app.innerHTML=`<main><div class="top"></div>${navHtml()}<div id="body">${skeleton()}</div></main>`;wireF();
  try{
-  const {items,pages}=await API[src].list(S.cat,S.page,S.q,{g:S.g,c:S.c,y:S.y});
+  let rs=await API[src].list(S.cat,S.page,S.q,{g:S.g,c:S.c,y:S.y});if(S.cat==="moi"&&!S.q)rs=await noAnim(rs);const {items,pages}=rs;
   const fl=S.g||S.c||S.y,fn=S.g?GEN.find(x=>x[0]===S.g)?.[1]:S.c?COU.find(x=>x[0]===S.c)?.[1]:S.y,title=S.q?`Kết quả cho “${esc(S.q)}”`:fl?(S.g?"Thể loại: ":S.c?"Quốc gia: ":"Năm: ")+esc(fn||""):CATS.find(c=>c[0]===S.cat)[1];
   let hero="";
   if(!S.q&&!fl&&S.cat==="moi"&&S.page===1&&items[0]){const f=items[0];
@@ -276,7 +275,7 @@ async function list(){
  }catch(e){$("#body").innerHTML=`<p class="msg">Không tải được danh sách (${esc(e.message)}).<br>Kiểm tra mạng hoặc đổi sang nguồn khác.</p>`}
 }
 
-let cur=null,mode="hls",hls=null,V=null,P={key:null},T;
+let cur=null,mode=safe(()=>localStorage.getItem("pm"))||"hls",hls=null,V=null,P={key:null},T;
 async function detail(s,slug){
  src=s;safe(()=>localStorage.setItem("src",s));syncSeg();
  const app=$("#app");app.innerHTML=`<main class="dv"><div class="top"></div><div class="player"></div></main>`;
@@ -289,13 +288,13 @@ async function detail(s,slug){
   const row=(l,v)=>v?`<dt>${l}</dt><dd>${esc(v)}</dd>`:"";
   app.innerHTML=`<main class="dv"><div class="bg" style="background-image:url('${esc(m.poster)}')"></div><div class="top"></div>
    <div class="player" id="slot"></div>
-   <div class="panel"><div class="row"><span class="lbl">Trình phát</span><button class="chip ${mode==="embed"?"on":""}" data-m="embed">Nhúng</button><button class="chip ${mode==="hls"?"on":""}" data-m="hls">HLS</button></div>
+   <div class="panel"><div class="row"><span class="lbl">Trình phát</span><button class="chip ${mode==="embed"?"on":""}" data-m="embed">Nhúng</button><button class="chip ${mode==="hls"?"on":""}" data-m="hls">HLS</button><a class="chip" id="ext" target="_blank" rel="noopener">Mở tab mới</a></div>
     <div class="row"><span class="lbl">Server</span><span class="row" id="sv"></span></div>
     <div class="eps" id="eps"></div></div>
    <div class="info"><img src="${esc(m.poster)}" alt=""><div><h1>${esc(m.name)}</h1><div style="color:var(--mute)">${esc(m.origin)}</div>
     <div class="meta">${[m.year,m.quality,m.lang,m.time].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join("")}</div>
     <button class="btn" id="fv"></button><p class="desc" style="margin-top:14px">${esc(m.desc)}</p><dl>${row("Thể loại",m.genres)}${row("Đạo diễn",m.director)}${row("Diễn viên",m.cast)}</dl></div></div></main>`;
-  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{mode=b.dataset.m;app.querySelectorAll("[data-m]").forEach(x=>x.classList.toggle("on",x===b));dock();play()});
+  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{mode=b.dataset.m;safe(()=>localStorage.setItem("pm",mode));app.querySelectorAll("[data-m]").forEach(x=>x.classList.toggle("on",x===b));dock();play()});
   dock();drawEps();favUI();if(!(P.key===s+slug&&pw.firstChild))play();document.title=m.name+" – Flix";
  }catch(e){app.innerHTML=`<main><div class="top"></div><p class="msg">Không mở được phim: ${esc(e.message)}<br><br><a class="btn" href="#/">← Về trang chủ</a></p></main>`}
 }
@@ -342,7 +341,7 @@ function bindV(e){
  v.ontimeupdate=()=>{if(!drag&&v.duration)sk.value=v.currentTime/v.duration*1000;tm.textContent=fmt(v.currentTime)+" / "+fmt(v.duration)};
  sk.oninput=()=>{drag=true;if(v.duration)v.currentTime=sk.value/1000*v.duration};
  sk.onchange=()=>{drag=false};
- v.onerror=fb;
+ v.onerror=fb;const to=setTimeout(()=>{if(V===v&&v.readyState<2)fb()},12000);v.onloadeddata=()=>clearTimeout(to);
  if(!document.pictureInPictureEnabled&&!v.webkitSetPresentationMode)pw.querySelector('[data-a=pip]').style.display="none";
  if(window.Hls&&Hls.isSupported()){hls=new Hls();hls.loadSource(e.m3u8);hls.attachMedia(v);hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)fb()})}else v.src=e.m3u8;
  v.play().catch(()=>{});show();
@@ -353,8 +352,9 @@ function play(fe){
  safe(()=>{const p=prof();p.hist=p.hist.filter(x=>!(x.s===cur.s&&x.slug===cur.slug));p.hist.unshift({s:cur.s,slug:cur.slug,name:cur.m.name,thumb:cur.m.poster,ep:e.name});p.hist=p.hist.slice(0,60);save(p)});
  if(hls){hls.destroy();hls=null}
  V=null;P={key:cur.s+cur.slug,url:"#/phim/"+cur.s+"/"+cur.slug};
+ {const x=$("#ext");if(x)x.href=e.embed||e.m3u8||"#"}
  if(!fe&&mode==="hls"&&e.m3u8){pw.innerHTML='<div class="pv"><video playsinline></video></div>'+CTL();bindV(e)}
- else if(e.embed)pw.innerHTML=`<div class="pv"><iframe src="${esc(e.embed)}" allowfullscreen allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="no-referrer"></iframe></div>`+LITE();
+ else if(e.embed)pw.innerHTML=`<div class="pv"><iframe src="${esc(e.embed)}" allowfullscreen allow="autoplay; fullscreen; picture-in-picture; encrypted-media"></iframe></div>`+LITE();
  else pw.innerHTML='<div class="pv"><p class="msg">Tập này chưa có link phát.</p></div>'+LITE();
 }
 pw.onclick=e=>{const b=e.target.closest("[data-a]");if(!b){if(!e.target.closest("input"))tog();return}
@@ -437,6 +437,11 @@ function profile(){
   else{const x=users[u];if(!x||x.hash!==await hash(pw,x.salt))return fail("Sai tên đăng nhập hoặc mật khẩu")}
   me=u;W("session",u);PV={view:"main",tab:"hist",err:""};profile()});
 }
+const AN={};
+async function anim(){if(AN[src])return AN[src];
+ const pg=await Promise.all([1,2,3,4].map(p=>API[src].list("hoat-hinh",p,"").catch(()=>null)));
+ const set=new Set(pg.flatMap(r=>r?r.items.map(i=>i.slug):[]));if(pg.some(Boolean))AN[src]=set;return set}
+async function noAnim(r){const a=await anim();return{...r,items:r.items.filter(i=>!a.has(i.slug))}}
 let HT=0,HG=safe(()=>localStorage.getItem("hg"))||"hanh-dong";const FK={};
 const SKR=`<div class="rail">${'<div class="card sk"><div class="poster"></div><i></i></div>'.repeat(8)}</div>`;
 const cardH=i=>`<a class="card" href="#/phim/${src}/${esc(i.slug)}"><div class="poster"><img loading="lazy" src="${esc(i.thumb)}" alt="${esc(i.name)}">${i.tag?`<span class="tag">${esc(i.tag)}</span>`:""}<span class="play"></span></div><div class="t">${esc(i.name)}</div><div class="o">${esc(i.origin)}</div></a>`;
@@ -448,11 +453,11 @@ async function soon(){
  return{items:pg.flatMap(x=>x.items).filter(i=>re.test(i.tag)),pages:1}
 }
 const SECS=[
- {id:"new",title:"Phim mới nhất",more:()=>"#/moi",load:()=>API[src].list("moi",1,"")},
- {id:"soon",title:"Phim sắp ra mắt",hide:1,load:soon},
- {id:"genre",title:"Phim thể loại",more:()=>"#/loc/g/"+HG,load:()=>API[src].list("moi",1,"",{g:HG})},
- {id:"jp",title:"Phim Nhật Bản",more:()=>"#/loc/c/nhat-ban",load:()=>API[src].list("moi",1,"",{c:"nhat-ban"})},
- {id:"cn",title:"Phim Trung Quốc",more:()=>"#/loc/c/trung-quoc",load:()=>API[src].list("moi",1,"",{c:"trung-quoc"})}];
+ {id:"new",title:"Phim mới nhất",more:()=>"#/moi",load:()=>API[src].list("moi",1,"").then(noAnim)},
+ {id:"soon",title:"Phim sắp ra mắt",hide:1,load:()=>soon().then(noAnim)},
+ {id:"anim",title:"Phim hoạt hình",more:()=>"#/hoat-hinh",load:()=>API[src].list("hoat-hinh",1,"")},
+ {id:"jp",title:"Phim Nhật Bản",more:()=>"#/loc/c/nhat-ban",load:()=>API[src].list("moi",1,"",{c:"nhat-ban"}).then(noAnim)},
+ {id:"cn",title:"Phim Trung Quốc",more:()=>"#/loc/c/trung-quoc",load:()=>API[src].list("moi",1,"",{c:"trung-quoc"}).then(noAnim)}];
 const secHtml=x=>`<section class="sec" id="s-${x.id}"><div class="sh"><h2>${x.title}</h2>${x.more?`<a class="more" href="${x.more()}">Xem tất cả</a>`:""}</div>${x.id==="genre"?`<div class="gch">${GEN.map(([v,n])=>`<button class="chip ${HG===v?"on":""}" data-g="${v}">${n}</button>`).join("")}</div>`:""}<div class="rb">${SKR}</div></section>`;
 function fill(x,t){const sec=$("#s-"+x.id);if(!sec)return;const box=sec.querySelector(".rb"),k=FK[x.id]=(FK[x.id]||0)+1;
  box.innerHTML=SKR;const stale=()=>t!==HT||k!==FK[x.id];
