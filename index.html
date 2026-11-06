@@ -34,8 +34,8 @@ header.solid{background:rgba(10,12,20,.82);backdrop-filter:blur(18px);border-bot
 .seg button{background:none;border:0;padding:7px 14px;border-radius:99px;cursor:pointer;color:var(--mute);font-weight:500;font-size:13px}
 .seg button.on{background:#fff;color:#0a0c14;font-weight:600}
 .hero{position:relative;min-height:min(78vh,620px);display:flex;align-items:flex-end;overflow:hidden}
-.hero .bg{position:absolute;inset:-30px;background-size:cover;background-position:center 20%;filter:blur(28px) saturate(1.2);transform:scale(1.1);opacity:.75}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 4%,transparent 60%),linear-gradient(90deg,var(--bg) 0,#0a0c1480 55%,transparent)}
+.hero .bg{position:absolute;inset:0;background-size:cover;background-position:center 18%;background-repeat:no-repeat}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 2%,#0a0c14b3 28%,transparent 62%),linear-gradient(90deg,#0a0c14a6 0,#0a0c1440 45%,transparent 75%)}
 .hero .in{position:relative;z-index:1;width:100%;max-width:1280px;margin:0 auto;padding:110px 16px 56px;display:flex;gap:36px;align-items:flex-end}
 .hero img{width:230px;aspect-ratio:2/3;object-fit:cover;border-radius:var(--r);box-shadow:0 30px 60px #0009;flex:none}
 .hero h1{font-size:clamp(30px,5vw,56px);line-height:1.05;letter-spacing:-1.5px;font-weight:800;max-width:14ch}
@@ -176,6 +176,55 @@ header,.sov{padding-top:calc(12px + env(safe-area-inset-top,0px))}
  .grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:18px 10px}
  .info{grid-template-columns:110px 1fr;gap:16px}.hero{min-height:480px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== Chế độ TV ===== */
+body.tv{font-size:22px;padding-bottom:0}
+body.tv #app{padding-left:140px}
+body.tv header{left:140px;padding:20px 56px 14px}
+body.tv .logo{font-size:30px}body.tv .logo i{width:40px;height:40px;font-size:18px}
+body.tv .seg button{font-size:19px;padding:10px 24px}
+body.tv .ib{width:56px;height:56px}body.tv .ib svg{width:26px}
+body.tv .sov{left:140px;padding:20px 56px}body.tv .sov input{font-size:22px;padding:16px 24px}
+body.tv .bn{inset:0 auto 0 0;width:140px;flex-direction:column;justify-content:center;gap:10px;padding:24px 10px;border-top:0;border-right:1px solid var(--line)}
+body.tv .bn a{flex:none;max-width:none;font-size:15px;padding:14px 0;gap:6px}
+body.tv .bn svg{width:32px;height:32px}
+body.tv main{max-width:none;padding:0 56px 80px}
+body.tv .top{height:130px}
+body.tv h2{font-size:34px;margin:34px 0 18px}
+body.tv .more{font-size:20px}
+body.tv .rail{gap:22px;padding:24px 56px 28px;margin-inline:-56px;scroll-padding-inline:56px}
+body.tv .rail .card{flex:0 0 220px;width:220px}
+body.tv .grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:36px 22px}
+body.tv .card .t{font-size:20px;margin-top:12px}body.tv .card .o{font-size:16px}
+body.tv .tag{font-size:15px;padding:4px 12px}
+body.tv .play{display:none}
+body.tv .hero{min-height:68vh}body.tv .hero .in{max-width:none;padding:140px 56px 70px}
+body.tv .hero img{width:300px}body.tv .hero h1{font-size:64px;max-width:16ch}body.tv .hero p{font-size:22px}
+body.tv .btn{font-size:21px;padding:16px 36px}
+body.tv .chip{font-size:20px;padding:12px 24px}
+body.tv .eps{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:12px;max-height:none;overflow:visible}
+body.tv .row .lbl{font-size:18px;min-width:120px}
+body.tv .panel{padding:24px}
+body.tv .info{grid-template-columns:260px 1fr;gap:40px}body.tv .info h1{font-size:46px}
+body.tv .desc,body.tv .info dl{font-size:20px}
+body.tv .meta span{font-size:17px;padding:5px 14px}
+body.tv .player{border-radius:24px}
+body.tv .cb{width:56px;height:56px}body.tv .cb svg{width:28px;height:28px}
+body.tv .cb.big{width:84px;height:84px}body.tv .cb.big svg{width:40px;height:40px}
+body.tv .cb.sk{width:68px;height:68px}body.tv .cb.sk svg{width:36px;height:36px}
+body.tv .tm{font-size:19px}body.tv .seek{height:28px}
+body.tv .tile{font-size:22px;padding:30px 12px}
+body.tv .tg{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+body.tv .pager{margin:50px 0}
+body.tv .inp{font-size:20px;padding:14px 18px}
+body.tv .poster{transition:scale .2s,outline-offset .2s,box-shadow .2s}
+body.tv :focus{outline:none}
+body.tv .card:focus .poster{outline:4px solid #fff;outline-offset:4px;scale:1.07;box-shadow:0 22px 50px #000a}
+body.tv .chip:focus,body.tv .btn:focus,body.tv .tile:focus,body.tv .more:focus,body.tv .cb:focus,body.tv .ib:focus,body.tv .seg button:focus,body.tv .logo:focus,body.tv .inp:focus{outline:4px solid #fff;outline-offset:3px;scale:1.06}
+body.tv .chip:focus,body.tv .btn:focus,body.tv .tile:focus{background:#fff;color:#0a0c14}
+body.tv .bn a:focus{background:rgba(255,255,255,.16);color:#fff;outline:3px solid #fff;outline-offset:-3px}
+body.tv .seek:focus{outline:3px solid #fff;outline-offset:6px}
+body.tv #pw:focus{outline:4px solid #fff;outline-offset:-4px}
 </style>
 </head>
 <body>
@@ -205,6 +254,10 @@ const img=u=>!u?"":/^https?:/.test(u)?u:"https://phimimg.com/"+u.replace(/^\//,"
 const get=async u=>{const r=await fetch(u);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()};
 const safe=f=>{try{return f()}catch(e){return null}};
 let src=safe(()=>localStorage.getItem("src"))||"kk";
+if(/[?&]tv=1/.test(location.search))safe(()=>localStorage.setItem("tv","1"));
+const TV=(()=>{const st=safe(()=>localStorage.getItem("tv")),ua=navigator.userAgent;
+ return st==="1"||(st!=="0"&&(/smart-?tv|tizen|web0s|webos|netcast|bravia|hbbtv|vidaa|googletv|android tv|crkey|roku|viera|philipstv|sonydtv/i.test(ua)||/\bAFT[A-Z0-9]+/.test(ua)))})();
+if(TV)document.body.classList.add("tv");
 
 const API={
  kk:{
@@ -231,7 +284,7 @@ const API={
    else if(f&&(f.g||f.c||f.y))j=await get(`https://phim.nguonc.com/api/films/${f.g?"the-loai/"+f.g:f.c?"quoc-gia/"+f.c:"nam-phat-hanh/"+f.y}?page=${page}`);
    else if(cat==="moi")j=await get(`https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=${page}`);
    else j=await get(`https://phim.nguonc.com/api/films/danh-sach/${cat}?page=${page}`);
-   return{pages:j.paginate?.total_page||1,items:(j.items||[]).map(i=>({slug:i.slug,name:i.name,origin:i.original_name,thumb:img(i.thumb_url||i.poster_url),tag:i.current_episode||i.quality||"",desc:strip(i.description)}))}
+   return{pages:j.paginate?.total_page||1,items:(j.items||[]).map(i=>({slug:i.slug,name:i.name,origin:i.original_name,thumb:img(i.thumb_url||i.poster_url),back:img(i.poster_url),tag:i.current_episode||i.quality||"",desc:strip(i.description)}))}
   },
   async detail(slug){
    const j=await get(`https://phim.nguonc.com/api/film/${slug}`),m=j.movie;
@@ -241,7 +294,7 @@ const API={
     servers:(m.episodes||[]).map(s=>({name:s.server_name,eps:(s.items||[]).map(e=>({name:e.name,embed:e.embed,m3u8:e.m3u8}))}))}
   }}
 };
-function kkNorm(items,pages){return{pages:pages||1,items:(items||[]).map(i=>({slug:i.slug,name:i.name,origin:i.origin_name,thumb:img(i.thumb_url||i.poster_url),tag:i.episode_current||i.quality||""}))}}
+function kkNorm(items,pages){return{pages:pages||1,items:(items||[]).map(i=>({slug:i.slug,name:i.name,origin:i.origin_name,thumb:img(i.thumb_url||i.poster_url),back:img(i.poster_url),tag:i.episode_current||i.quality||""}))}}
 
 let S={cat:"moi",page:1,q:"",g:"",c:"",y:""};
 const GEN=[["hanh-dong","Hành động"],["tinh-cam","Tình cảm"],["hai-huoc","Hài hước"],["co-trang","Cổ trang"],["tam-ly","Tâm lý"],["hinh-su","Hình sự"],["chien-tranh","Chiến tranh"],["the-thao","Thể thao"],["vo-thuat","Võ thuật"],["vien-tuong","Viễn tưởng"],["phieu-luu","Phiêu lưu"],["khoa-hoc","Khoa học"],["kinh-di","Kinh dị"],["am-nhac","Âm nhạc"],["than-thoai","Thần thoại"],["tai-lieu","Tài liệu"],["gia-dinh","Gia đình"],["chinh-kich","Chính kịch"],["bi-an","Bí ẩn"],["hoc-duong","Học đường"]];
@@ -261,7 +314,7 @@ async function list(){
   const fl=S.g||S.c||S.y,fn=S.g?GEN.find(x=>x[0]===S.g)?.[1]:S.c?COU.find(x=>x[0]===S.c)?.[1]:S.y,title=S.q?`Kết quả cho “${esc(S.q)}”`:fl?(S.g?"Thể loại: ":S.c?"Quốc gia: ":"Năm: ")+esc(fn||""):CATS.find(c=>c[0]===S.cat)[1];
   let hero="";
   if(!S.q&&!fl&&S.cat==="moi"&&S.page===1&&items[0]){const f=items[0];
-   hero=`<section class="hero"><div class="bg" style="background-image:url('${esc(f.thumb)}')"></div><div class="in"><img src="${esc(f.thumb)}" alt=""><div>
+   hero=`<section class="hero"><div class="bg" style="background-image:url('${esc(f.back||f.thumb)}')"></div><div class="in"><img src="${esc(f.thumb)}" alt=""><div>
    <div class="meta"><span>Nổi bật</span>${f.tag?`<span>${esc(f.tag)}</span>`:""}</div><h1>${esc(f.name)}</h1><p>${esc(f.origin)}</p>
    <a class="btn pri" href="#/phim/${src}/${esc(f.slug)}">▶ Xem ngay</a></div></div></section>`}
   const body=items.length?`${fl?'<a class="chip" href="#/the-loai" style="display:inline-block">← Thể loại</a>':""}<h2>${title}</h2><div class="grid">${items.map(i=>`
@@ -321,8 +374,8 @@ const fmt=t=>{t=isFinite(t)?Math.floor(t):0;const h=Math.floor(t/3600),m=Math.fl
 const ctl=()=>pw.querySelector(".ctl:not(.lite)");
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3500)}
 function flash(t,side){const f=document.createElement("div");f.className="fl "+side;f.textContent=t;pw.appendChild(f);setTimeout(()=>f.remove(),700)}
-function show(){const c=ctl();if(!c)return;c.classList.add("on");clearTimeout(T);if(V&&!V.paused)T=setTimeout(()=>c.classList.remove("on"),3000)}
-function tog(){const c=ctl();if(!c)return;c.classList.contains("on")?c.classList.remove("on"):show()}
+function show(){const c=ctl();if(!c)return;c.classList.add("on");clearTimeout(T);if(V&&!V.paused&&!TV)T=setTimeout(()=>c.classList.remove("on"),3000)}
+function tog(){if(TV)return;const c=ctl();if(!c)return;c.classList.contains("on")?c.classList.remove("on"):show()}
 function skip(d){if(!V)return;V.currentTime=Math.max(0,Math.min(V.duration||1e9,V.currentTime+d));show();flash((d>0?"+":"−")+"10s",d>0?"r":"l")}
 function vp(on){if(!V)return;on?V.play():V.pause();flash(on?"▶ Phát":"⏸ Tạm dừng",on?"r":"l")}
 function pip(){if(!V)return;if(document.pictureInPictureElement)document.exitPictureInPicture();else if(V.requestPictureInPicture)V.requestPictureInPicture().catch(()=>{});else V.webkitSetPresentationMode?.(V.webkitPresentationMode==="picture-in-picture"?"inline":"picture-in-picture")}
@@ -372,7 +425,7 @@ pw.addEventListener("touchend",e=>{if(!V||e.target.closest("button,input"))retur
   if(n-lt<300){lt=0;skip(t.clientX<r.left+r.width/2?-10:10)}else{lt=n;setTimeout(()=>{if(lt===n){lt=0;tog()}},300)}}});
 pw.addEventListener("mousemove",()=>show());
 addEventListener("keydown",e=>{if(!V||pw.hidden||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
- if(e.key===" "){e.preventDefault();V.paused?V.play():V.pause()}else if(e.key==="ArrowRight")skip(10);else if(e.key==="ArrowLeft")skip(-10);else if(e.key==="f")fs()});
+ if(e.key===" "){e.preventDefault();V.paused?V.play():V.pause()}else if(e.key==="ArrowRight"&&!TV)skip(10);else if(e.key==="ArrowLeft"&&!TV)skip(-10);else if(e.key==="f")fs()});
 
 const J=(k,d)=>safe(()=>JSON.parse(localStorage.getItem(k)))??d;
 const W=(k,v)=>safe(()=>localStorage.setItem(k,JSON.stringify(v)));
@@ -409,7 +462,7 @@ function profile(){
  <div class="row" style="margin-bottom:14px"><button class="btn" data-v="${PV.view==="edit"?"main":"edit"}">Chỉnh sửa hồ sơ</button>${me?'<button class="btn" id="lo">Đăng xuất</button>':'<button class="btn pri" data-v="login">Đăng nhập / Đăng ký</button>'}</div>
  ${panel}
  <div class="panel"><div class="row"><span class="lbl">Nguồn phim</span><button class="chip ${src==="kk"?"on":""}" data-s="kk">KKPhim</button><button class="chip ${src==="ng"?"on":""}" data-s="ng">NguonC</button></div>
- ${STANDALONE?"":'<div class="row"><span class="lbl">Ứng dụng</span><button class="chip" id="inst">Thêm vào màn hình chính</button></div>'}<div class="row"><span class="lbl">Sao lưu</span><button class="chip" id="ex">Xuất file</button><button class="chip" id="im">Nhập file</button><input type="file" id="if" accept="application/json" hidden></div></div>
+ ${STANDALONE?"":'<div class="row"><span class="lbl">Ứng dụng</span><button class="chip" id="inst">Thêm vào màn hình chính</button></div>'}<div class="row"><span class="lbl">Chế độ TV</span><button class="chip ${TV?"on":""}" id="tvm">${TV?"Đang bật":"Đang tắt"}</button></div><div class="row"><span class="lbl">Sao lưu</span><button class="chip" id="ex">Xuất file</button><button class="chip" id="im">Nhập file</button><input type="file" id="if" accept="application/json" hidden></div></div>
  <div class="row" style="margin-top:24px"><button class="chip ${PV.tab==="hist"?"on":""}" data-tb="hist">Lịch sử (${p.hist.length})</button><button class="chip ${PV.tab==="fav"?"on":""}" data-tb="fav">Yêu thích (${p.fav.length})</button></div>
  ${list.length?`<div class="grid" style="margin-top:18px">${list.map(card).join("")}</div>${PV.tab==="hist"?'<div class="pager"><button class="btn" id="clr">Xóa lịch sử</button></div>':""}`:`<p class="msg">${PV.tab==="fav"?"Chưa có phim yêu thích. Bấm ♡ ở trang phim để lưu lại.":"Bạn chưa xem phim nào."}</p>`}</main>`;
  const A=$("#app"),on=(q,f)=>{const el=A.querySelector(q);el&&(el.onclick=f)};
@@ -422,6 +475,7 @@ function profile(){
  const pf=$("#pf");pf&&(pf.onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=c.height=160;const m=Math.min(im.width,im.height);c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,160,160);p.avatar=c.toDataURL("image/jpeg",.82);save(p);profile()};im.src=URL.createObjectURL(f)});
  on("#lo",()=>{me=null;W("session",null);PV={view:"main",tab:"hist",err:""};profile()});
  on("#inst",async()=>{if(DP){DP.prompt();await DP.userChoice;DP=null}else alert("iPhone/iPad (Safari): bấm nút Chia sẻ rồi chọn “Thêm vào MH chính”.\nAndroid (Chrome): mở menu ⋮ rồi chọn “Cài đặt ứng dụng” hoặc “Thêm vào màn hình chính”.")});
+ on("#tvm",()=>{safe(()=>localStorage.setItem("tv",TV?"0":"1"));location.reload()});
  on("#clr",()=>{p.hist=[];save(p);profile()});
  on("#ex",()=>{const prog={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith("h:"))prog[k]=localStorage.getItem(k)}
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({app:"flix",v:1,profile:prof(),prog})],{type:"application/json"}));a.download="flix-backup-"+(me||"khach")+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e3)});
@@ -445,7 +499,7 @@ async function noAnim(r){const a=await anim();return{...r,items:r.items.filter(i
 let HT=0,HG=safe(()=>localStorage.getItem("hg"))||"hanh-dong";const FK={};
 const SKR=`<div class="rail">${'<div class="card sk"><div class="poster"></div><i></i></div>'.repeat(8)}</div>`;
 const cardH=i=>`<a class="card" href="#/phim/${src}/${esc(i.slug)}"><div class="poster"><img loading="lazy" src="${esc(i.thumb)}" alt="${esc(i.name)}">${i.tag?`<span class="tag">${esc(i.tag)}</span>`:""}<span class="play"></span></div><div class="t">${esc(i.name)}</div><div class="o">${esc(i.origin)}</div></a>`;
-const heroHtml=f=>`<section class="hero"><div class="bg" style="background-image:url('${esc(f.thumb)}')"></div><div class="in"><img src="${esc(f.thumb)}" alt=""><div><div class="meta"><span>Nổi bật</span>${f.tag?`<span>${esc(f.tag)}</span>`:""}</div><h1>${esc(f.name)}</h1><p>${esc(f.origin)}</p><a class="btn pri" href="#/phim/${src}/${esc(f.slug)}">▶ Xem ngay</a></div></div></section>`;
+const heroHtml=f=>`<section class="hero"><div class="bg" style="background-image:url('${esc(f.back||f.thumb)}')"></div><div class="in"><img src="${esc(f.thumb)}" alt=""><div><div class="meta"><span>Nổi bật</span>${f.tag?`<span>${esc(f.tag)}</span>`:""}</div><h1>${esc(f.name)}</h1><p>${esc(f.origin)}</p><a class="btn pri" href="#/phim/${src}/${esc(f.slug)}">▶ Xem ngay</a></div></div></section>`;
 async function soon(){
  if(src==="kk"){try{const r=await API.kk.list("phim-sap-chieu",1,"");if(r.items.length)return r}catch(e){}}
  const re=/trailer|sắp|sap chi|coming/i;
@@ -473,6 +527,34 @@ function home(){
   app.querySelectorAll("[data-g]").forEach(x=>x.classList.toggle("on",x===b));$("#s-genre .more").href="#/loc/g/"+HG;fill(SECS[2],HT)});
  SECS.forEach(x=>fill(x,t));
 }
+const FOCI='a[href],button,input:not([type=hidden]):not([type=file]),select,[tabindex="0"]';
+const vis=e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&!e.closest(".sov:not(.open)")&&getComputedStyle(e).visibility!=="hidden"};
+function foc(el){el.focus({preventScroll:true});if(!el.closest(".bn,header,.sov"))el.scrollIntoView({block:"center",inline:"center",behavior:"smooth"})}
+function nav(dir){
+ const cur=document.activeElement,els=[...document.querySelectorAll(FOCI)].filter(e=>!e.disabled&&vis(e));
+ if(!cur||cur===document.body||!els.includes(cur)){els.length&&foc(els.find(e=>e.closest("#app"))||els[0]);return}
+ const c=cur.getBoundingClientRect(),cx=c.left+c.width/2,cy=c.top+c.height/2;let best=null,bs=1e9;
+ for(const el of els){if(el===cur)continue;const r=el.getBoundingClientRect(),dx=r.left+r.width/2-cx,dy=r.top+r.height/2-cy;let m,x;
+  if(dir==="R"&&dx>8){m=dx;x=Math.abs(dy)}else if(dir==="L"&&dx<-8){m=-dx;x=Math.abs(dy)}else if(dir==="D"&&dy>8){m=dy;x=Math.abs(dx)}else if(dir==="U"&&dy<-8){m=-dy;x=Math.abs(dx)}else continue;
+  const sc=m+x*2.5;if(sc<bs){bs=sc;best=el}}
+ best&&foc(best)}
+function goBack(){
+ if(document.fullscreenElement||document.webkitFullscreenElement)return fs();
+ const sf=$("#sf");if(sf.classList.contains("open"))return sf.classList.remove("open");
+ const h=location.hash;if(h&&h!=="#/"&&h!=="#"){history.length>1?history.back():(location.hash="#/")}}
+addEventListener("keydown",e=>{
+ const k=e.key,kc=e.keyCode,a=document.activeElement,typing=a&&(a.tagName==="TEXTAREA"||(a.tagName==="INPUT"&&a.type!=="range"));
+ if(V&&!typing){const m={415:"p",19:"s",10252:"t",417:"f",412:"r",413:"s"}[kc]||{MediaPlayPause:"t",MediaPlay:"p",MediaPause:"s",MediaFastForward:"f",MediaRewind:"r"}[k];
+  if(m){e.preventDefault();m==="p"?V.play():m==="s"?V.pause():m==="t"?(V.paused?V.play():V.pause()):skip(m==="f"?30:-30);return}}
+ if(TV||kc===10009||kc===461||k==="BrowserBack"){if(k==="Escape"||k==="BrowserBack"||kc===10009||kc===461||(k==="Backspace"&&!typing)){e.preventDefault();goBack();return}}
+ if(!TV)return;
+ if(k==="Enter"&&a===pw&&V){e.preventDefault();V.paused?V.play():V.pause();show();return}
+ const D={ArrowRight:"R",ArrowLeft:"L",ArrowDown:"D",ArrowUp:"U"}[k];if(!D||(typing&&(D==="L"||D==="R")))return;
+ e.preventDefault();
+ if((D==="L"||D==="R")&&V&&(a===pw||(a.classList&&a.classList.contains("seek")))){skip(D==="R"?10:-10);return}
+ nav(D)});
+if(TV){pw.tabIndex=0;setInterval(()=>{const a=document.activeElement;if(a&&a!==document.body)return;
+ const t=(!pw.hidden&&$("#slot")?.contains(pw)&&pw)||$("#app .hero .btn")||$("#app .card")||$("#app .tile")||$("#app .chip")||$("#app button")||document.querySelector(".bn a");t&&foc(t)},900)}
 const FLAG={"han-quoc":"🇰🇷","trung-quoc":"🇨🇳","au-my":"🇺🇸","nhat-ban":"🇯🇵","thai-lan":"🇹🇭","viet-nam":"🇻🇳","dai-loan":"🇹🇼","hong-kong":"🇭🇰","an-do":"🇮🇳"};
 function kham(){syncSeg();tab("kham");
  const t=(k,a,fl)=>`<div class="tg">${a.map(([v,n])=>`<a class="tile" href="#/loc/${k}/${v}">${fl&&FLAG[v]?FLAG[v]+" ":""}${n}</a>`).join("")}</div>`;
