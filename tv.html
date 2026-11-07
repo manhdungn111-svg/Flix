@@ -314,11 +314,12 @@ document.addEventListener("keydown",function(e){
   if(c===412||k==="MediaRewind"){seek(-30);return}
   return}
  if(back){e.preventDefault();var inSb=a&&a.closest&&a.closest("#sb");
-  if(/^#?\/?(c\/[^/]+|g|me|s)?$/.test(location.hash)){if(!inSb){var s0=$(".si.on")||$(".si");if(s0)foc(s0)}}else history.back();return}
+  if(/^#?\/?(c\/[^/]+|g|me|s)?$/.test(location.hash)){if(!inSb){var s0=$(".si.on")||$(".si");if(s0)foc(s0)}else if(window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.App)Capacitor.Plugins.App.exitApp()}else history.back();return}
  var D={ArrowRight:"R",ArrowLeft:"L",ArrowDown:"D",ArrowUp:"U"}[k];
  if(!D||(typing&&(D==="L"||D==="R")))return;
  e.preventDefault();nav(D)});
 try{if(window.tizen&&tizen.tvinputdevice)tizen.tvinputdevice.registerKeyBatch(["MediaPlay","MediaPause","MediaPlayPause","MediaFastForward","MediaRewind","MediaStop"])}catch(x){}
+try{var CA=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.App;if(CA)CA.addListener("backButton",function(){document.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true}))})}catch(x){}
 setInterval(function(){if(P)return;var a=document.activeElement;if(a&&a!==document.body)return;
  var t=$("[data-af]")||$(".cd")||$(".tl")||$(".ep")||$(".si");if(t)foc(t)},800);
 
