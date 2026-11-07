@@ -34,35 +34,58 @@ jobs:
       - name: Cau hinh Android TV (Leanback, banner, man hinh ngang)
         run: |
           python3 - <<'PY'
-          import re
           p = "android/app/src/main/AndroidManifest.xml"
-          s = open(p, encoding="utf-8").read()
-          print(s)
+          print(open(p, encoding="utf-8").read())
+          manifest = """<?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-          # 1) uses-feature leanback (khong bat buoc)
-          if "android.software.leanback" not in s:
-              s = s.replace("<application",
-                '<uses-feature android:name="android.software.leanback" android:required="false" />\n'
-                '    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />\n'
-                '    <application', 1)
+              <uses-feature android:name="android.software.leanback" android:required="false" />
+              <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
-          # 2) them LEANBACK_LAUNCHER canh LAUNCHER
-          if "LEANBACK_LAUNCHER" not in s:
-              s = re.sub(
-                r'(<category\s+android:name="android\.intent\.category\.LAUNCHER"\s*/>)',
-                r'\1\n                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />',
-                s, count=1)
+              <application
+                  android:allowBackup="true"
+                  android:icon="@mipmap/ic_launcher"
+                  android:label="@string/app_name"
+                  android:roundIcon="@mipmap/ic_launcher_round"
+                  android:banner="@drawable/banner"
+                  android:supportsRtl="true"
+                  android:theme="@style/AppTheme">
 
-          # 3) banner + man hinh ngang cho activity
-          if "android:banner" not in s:
-              s = re.sub(r'<activity\b', '<activity android:banner="@drawable/banner"', s, count=1)
-          if "screenOrientation" not in s:
-              s = re.sub(r'<activity\b', '<activity android:screenOrientation="landscape"', s, count=1)
+                  <activity
+                      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation"
+                      android:name=".MainActivity"
+                      android:label="@string/title_activity_main"
+                      android:theme="@style/AppTheme.NoActionBarLaunch"
+                      android:launchMode="singleTask"
+                      android:screenOrientation="landscape"
+                      android:banner="@drawable/banner"
+                      android:exported="true">
 
-          assert "LEANBACK_LAUNCHER" in s, "Khong chen duoc LEANBACK_LAUNCHER"
-          assert "android:banner" in s, "Khong chen duoc banner"
-          open(p, "w", encoding="utf-8").write(s)
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                          <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                      </intent-filter>
+
+                  </activity>
+
+                  <provider
+                      android:name="androidx.core.content.FileProvider"
+                      android:authorities="${applicationId}.fileprovider"
+                      android:exported="false"
+                      android:grantUriPermissions="true">
+                      <meta-data
+                          android:name="android.support.FILE_PROVIDER_PATHS"
+                          android:resource="@xml/file_paths"></meta-data>
+                  </provider>
+              </application>
+
+              <uses-permission android:name="android.permission.INTERNET" />
+          </manifest>
+          """
+          open(p, "w", encoding="utf-8").write(manifest)
           PY
+          command -v convert >/dev/null || sudo apt-get install -y imagemagick
           mkdir -p android/app/src/main/res/drawable assets
           convert icon-512.png -resize 150x150 -background '#0a0c14' -gravity center -extent 320x180 android/app/src/main/res/drawable/banner.png
           convert icon-512.png -resize 1024x1024 assets/icon-only.png || true
