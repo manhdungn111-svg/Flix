@@ -169,6 +169,10 @@ body{padding-bottom:84px}
 .gch .chip{white-space:nowrap;border-radius:99px}
 header,.sov{padding-top:calc(12px + env(safe-area-inset-top,0px))}
 .top{height:calc(84px + env(safe-area-inset-top,0px))}
+.pw.full{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:35;border-radius:0}
+.pw.full .mb{display:flex}
+.pw.full .ctop{padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.pw.full .cbot{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 @media(max-width:700px){.rail .card{flex-basis:104px;width:104px}.card .t{font-size:13px}.card .o{font-size:11.5px}.rail{gap:10px}}
 @media(max-width:700px){
  header{flex-wrap:wrap;gap:10px}.search{order:3;flex-basis:100%;max-width:none;margin:0}.seg{margin-left:auto}
@@ -397,9 +401,9 @@ async function pip(){
 function fs(){if(document.fullscreenElement||document.webkitFullscreenElement){(document.exitFullscreen||document.webkitExitFullscreen).call(document);screen.orientation?.unlock?.();return}
  const f=pw.requestFullscreen||pw.webkitRequestFullscreen;if(f){const r=f.call(pw);r?.then?.(()=>screen.orientation?.lock?.("landscape")?.catch?.(()=>{}));r?.catch?.(()=>{})}else V?.webkitEnterFullscreen?.()}
 const phBtn=t=>`<div class="ph"><button class="btn pri" id="dk">${t}</button></div>`;
-function toMini(){if(pw.classList.contains("mini")||pw.hidden)return;const sl=$("#slot");document.body.appendChild(pw);pw.classList.add("mini");if(sl){sl.innerHTML=phBtn("▶ Mở lại trình phát");$("#dk").onclick=dock}}
-function dock(){const sl=$("#slot");if(!sl)return;sl.innerHTML="";sl.appendChild(pw);pw.hidden=false;pw.classList.remove("mini")}
-function closeP(){if(hls){hls.destroy();hls=null}V&&V.pause();V=null;pw.innerHTML="";pw.hidden=true;pw.classList.remove("mini");P.key=null;
+function toMini(){if(pw.classList.contains("mini")||pw.hidden)return;const sl=$("#slot");document.body.appendChild(pw);pw.classList.add("mini");pw.classList.remove("full");popH();if(sl){sl.innerHTML=phBtn("▶ Mở lại trình phát");$("#dk").onclick=dock}}
+function dock(){const sl=$("#slot");if(!sl)return;sl.innerHTML="";sl.appendChild(pw);pw.hidden=false;pw.classList.remove("mini","full");pwH=false}
+function closeP(){if(hls){hls.destroy();hls=null}V&&V.pause();V=null;pw.innerHTML="";pw.hidden=true;pw.classList.remove("mini","full");popH();P.key=null;
  const sl=$("#slot"),was=sl&&sl.contains(pw);document.body.appendChild(pw);
  if(sl&&!was){sl.innerHTML=phBtn("▶ Phát tập này");$("#dk").onclick=()=>{dock();play()}}}
 function fb(){if(!pw.querySelector("video"))return;toast("Nguồn HLS bị chặn hoặc lỗi, đã chuyển sang trình phát nhúng");play(true)}
@@ -412,7 +416,7 @@ function bindV(e){
  v.onerror=fb;const to=setTimeout(()=>{if(V===v&&v.readyState<2)fb()},12000);v.onloadeddata=()=>clearTimeout(to);
  if(!document.pictureInPictureEnabled&&!v.webkitSetPresentationMode)pw.querySelector('[data-a=pip]').style.display="none";
  if(v.webkitSetPresentationMode&&v.canPlayType("application/vnd.apple.mpegurl"))v.src=e.m3u8;else if(window.Hls&&Hls.isSupported()){hls=new Hls();hls.loadSource(e.m3u8);hls.attachMedia(v);hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)fb()})}else v.src=e.m3u8;
- v.play().catch(()=>{});show();
+ v.play().catch(()=>{v.muted=true;v.play().catch(()=>{});toast("Đang phát không tiếng. Chạm vào màn hình để bật tiếng")});show();
 }
 function play(fe){
  const e=cur.m.servers[cur.si].eps[cur.ei];
@@ -425,15 +429,34 @@ function play(fe){
  else if(e.embed)pw.innerHTML=`<div class="pv"><iframe src="${esc(e.embed)}" allowfullscreen allow="autoplay; fullscreen; picture-in-picture; encrypted-media"></iframe></div>`+LITE();
  else pw.innerHTML='<div class="pv"><p class="msg">Tập này chưa có link phát.</p></div>'+LITE();
 }
-pw.onclick=e=>{const b=e.target.closest("[data-a]");if(!b){if(!e.target.closest("input"))tog();return}
+let qbusy=false,pwH=false;
+const QP=()=>safe(()=>localStorage.getItem("qp"))!=="0";
+function popH(){if(pwH){pwH=false;history.back()}}
+document.addEventListener("click",e=>{
+ const a=e.target.closest&&e.target.closest('a[href^="#/phim/"]');if(!a||!QP())return;
+ e.preventDefault();if(qbusy)return;
+ const p=a.getAttribute("href").replace(/^#\/?/,"").split("/"),s=p[1]==="ng"?"ng":"kk",slug=decodeURIComponent(p.slice(2).join("/"));
+ qbusy=true;if(hls){hls.destroy();hls=null}if(V)V.pause();V=null;
+ document.body.appendChild(pw);pw.hidden=false;pw.className="pw full";
+ pw.innerHTML='<div class="pv"></div><div class="ph" style="position:absolute;top:0;left:0;right:0;bottom:0">Đang mở phim…</div>'+LITE();
+ history.pushState({pw:1},"",location.href);pwH=true;
+ API[s].detail(slug).then(m=>{
+  if(!m.servers.length)throw new Error("Phim chưa có tập nào");
+  const sv=safe(()=>JSON.parse(localStorage.getItem("h:"+s+slug)))||{};
+  const si=Math.min(sv.si||0,m.servers.length-1),ei=Math.min(sv.ei||0,m.servers[si].eps.length-1);
+  cur={m,si,ei,s,slug};qbusy=false;play()
+ }).catch(err=>{qbusy=false;toast("Không mở được phim: "+err.message);closeP()})
+},true);
+addEventListener("popstate",()=>{if(pwH){pwH=false;if(pw.classList.contains("full"))toMini()}});
+pw.onclick=e=>{if(V&&V.muted)V.muted=false;const b=e.target.closest("[data-a]");if(!b){if(!e.target.closest("input"))tog();return}
  const a=b.dataset.a;
  if(a==="pp")V&&(V.paused?V.play():V.pause());else if(a==="back")skip(-10);else if(a==="fwd")skip(10);
  else if(a==="fs")fs();else if(a==="pip")pip();else if(a==="min")toMini();else if(a==="cls")closeP();
- else if(a==="exp"){location.hash===P.url?dock():(location.hash=P.url)}
+ else if(a==="exp"){pwH=false;location.hash===P.url?dock():(location.hash=P.url)}
  if(V)show()};
 let tx=0,ty=0,lt=0;
 pw.addEventListener("touchstart",e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY},{passive:true});
-pw.addEventListener("touchend",e=>{if(!V||e.target.closest("button,input"))return;
+pw.addEventListener("touchend",e=>{if(!V||e.target.closest("button,input"))return;if(V.muted)V.muted=false;
  const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
  if(Math.abs(dx)>60&&Math.abs(dy)<45){e.preventDefault();vp(dx>0);show();return}
  if(Math.abs(dx)<12&&Math.abs(dy)<12){e.preventDefault();const n=Date.now(),r=pw.getBoundingClientRect();
@@ -477,7 +500,7 @@ function profile(){
  <div class="row" style="margin-bottom:14px"><button class="btn" data-v="${PV.view==="edit"?"main":"edit"}">Chỉnh sửa hồ sơ</button>${me?'<button class="btn" id="lo">Đăng xuất</button>':'<button class="btn pri" data-v="login">Đăng nhập / Đăng ký</button>'}</div>
  ${panel}
  <div class="panel"><div class="row"><span class="lbl">Nguồn phim</span><button class="chip ${src==="kk"?"on":""}" data-s="kk">KKPhim</button><button class="chip ${src==="ng"?"on":""}" data-s="ng">NguonC</button></div>
- ${me&&window.Sync&&Sync.on()?'<div class="row"><span class="lbl">Đồng bộ</span><button class="chip" id="sy">Đồng bộ ngay</button></div><div class="row"><span class="lbl">Liên kết TV</span><input class="inp" id="tc" maxlength="6" placeholder="Mã 6 ký tự" style="width:9rem;text-transform:uppercase"><button class="chip" id="tl">Liên kết</button><span class="sub">Nhập mã hiển thị trên TV</span></div>':""}${STANDALONE?"":'<div class="row"><span class="lbl">Ứng dụng</span><button class="chip" id="inst">Thêm vào màn hình chính</button></div>'}<div class="row"><span class="lbl">Chế độ TV</span><button class="chip ${TV?"on":""}" id="tvm">${TV?"Đang bật":"Đang tắt"}</button></div><div class="row"><span class="lbl">Sao lưu</span><button class="chip" id="ex">Xuất file</button><button class="chip" id="im">Nhập file</button><input type="file" id="if" accept="application/json" hidden></div></div>
+ ${me&&window.Sync&&Sync.on()?'<div class="row"><span class="lbl">Đồng bộ</span><button class="chip" id="sy">Đồng bộ ngay</button></div><div class="row"><span class="lbl">Liên kết TV</span><input class="inp" id="tc" maxlength="6" placeholder="Mã 6 ký tự" style="width:9rem;text-transform:uppercase"><button class="chip" id="tl">Liên kết</button><span class="sub">Nhập mã hiển thị trên TV</span></div>':""}${STANDALONE?"":'<div class="row"><span class="lbl">Ứng dụng</span><button class="chip" id="inst">Thêm vào màn hình chính</button></div>'}<div class="row"><span class="lbl">Bấm poster</span><button class="chip" id="qpb">${QP()?"Phát ngay":"Xem chi tiết"}</button></div><div class="row"><span class="lbl">Chế độ TV</span><button class="chip ${TV?"on":""}" id="tvm">${TV?"Đang bật":"Đang tắt"}</button></div><div class="row"><span class="lbl">Sao lưu</span><button class="chip" id="ex">Xuất file</button><button class="chip" id="im">Nhập file</button><input type="file" id="if" accept="application/json" hidden></div></div>
  <div class="row" style="margin-top:24px"><button class="chip ${PV.tab==="hist"?"on":""}" data-tb="hist">Lịch sử (${p.hist.length})</button><button class="chip ${PV.tab==="fav"?"on":""}" data-tb="fav">Yêu thích (${p.fav.length})</button></div>
  ${list.length?`<div class="grid" style="margin-top:18px">${list.map(card).join("")}</div>${PV.tab==="hist"?'<div class="pager"><button class="btn" id="clr">Xóa lịch sử</button></div>':""}`:`<p class="msg">${PV.tab==="fav"?"Chưa có phim yêu thích. Bấm ♡ ở trang phim để lưu lại.":"Bạn chưa xem phim nào."}</p>`}</main>`;
  const A=$("#app"),on=(q,f)=>{const el=A.querySelector(q);el&&(el.onclick=f)};
@@ -492,6 +515,7 @@ function profile(){
  on("#inst",async()=>{if(DP){DP.prompt();await DP.userChoice;DP=null}else alert("iPhone/iPad (Safari): bấm nút Chia sẻ rồi chọn “Thêm vào MH chính”.\nAndroid (Chrome): mở menu ⋮ rồi chọn “Cài đặt ứng dụng” hoặc “Thêm vào màn hình chính”.")});
  on("#tl",()=>{const c=$("#tc").value.trim().toUpperCase();if(c.length<6)return toast("Nhập mã 6 ký tự đang hiện trên TV");Sync.approve(c).then(ok=>toast(ok?"Đã liên kết TV ✓":"Mã sai hoặc đã hết hạn")).catch(e=>toast(e.message))});
  on("#sy",()=>{toast("Đang đồng bộ...");Sync.flush().then(()=>toast("Đã đồng bộ"))});
+ on("#qpb",()=>{safe(()=>localStorage.setItem("qp",QP()?"0":"1"));profile()});
  on("#tvm",()=>{safe(()=>localStorage.setItem("tv",TV?"0":"1"));location.reload()});
  on("#clr",()=>{p.hist=[];p.hc=Date.now();save(p);profile()});
  on("#ex",()=>{const prog={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith("h:"))prog[k]=localStorage.getItem(k)}
