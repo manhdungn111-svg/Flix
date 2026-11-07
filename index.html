@@ -244,6 +244,7 @@ body.tv #pw:focus{outline:4px solid #fff;outline-offset:-4px}
 <div id="app"></div>
 
 <div class="pw" id="pw" hidden></div>
+<script src="sync.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js"></script>
 <script>
 const CATS=[["moi","Mới cập nhật"],["phim-le","Phim lẻ"],["phim-bo","Phim bộ"],["hoat-hinh","Hoạt hình"],["tv-shows","TV Shows"]];
@@ -258,6 +259,7 @@ if(/[?&]tv=1/.test(location.search))safe(()=>localStorage.setItem("tv","1"));
 const TV=(()=>{const st=safe(()=>localStorage.getItem("tv")),ua=navigator.userAgent;
  return st==="1"||(st!=="0"&&(/smart-?tv|tizen|web0s|webos|netcast|bravia|hbbtv|vidaa|googletv|android tv|crkey|roku|viera|philipstv|sonydtv/i.test(ua)||/\bAFT[A-Z0-9]+/.test(ua)))})();
 if(TV)document.body.classList.add("tv");
+if(TV&&!/[?&]notv/.test(location.search)&&safe(()=>localStorage.getItem("tv"))!=="0"&&safe(()=>localStorage.getItem("tvui"))!=="0")location.replace("tv.html");
 
 const API={
  kk:{
@@ -415,7 +417,7 @@ function bindV(e){
 function play(fe){
  const e=cur.m.servers[cur.si].eps[cur.ei];
  safe(()=>localStorage.setItem("h:"+cur.s+cur.slug,JSON.stringify({si:cur.si,ei:cur.ei})));
- safe(()=>{const p=prof();p.hist=p.hist.filter(x=>!(x.s===cur.s&&x.slug===cur.slug));p.hist.unshift({s:cur.s,slug:cur.slug,name:cur.m.name,thumb:cur.m.poster,ep:e.name});p.hist=p.hist.slice(0,60);save(p)});
+ safe(()=>{const p=prof();p.hist=p.hist.filter(x=>!(x.s===cur.s&&x.slug===cur.slug));p.hist.unshift({s:cur.s,slug:cur.slug,name:cur.m.name,thumb:cur.m.poster,ep:e.name,t:Date.now()});p.hist=p.hist.slice(0,60);save(p)});
  if(hls){hls.destroy();hls=null}
  V=null;P={key:cur.s+cur.slug,url:"#/phim/"+cur.s+"/"+cur.slug};
  {const x=$("#ext");if(x)x.href=e.embed||e.m3u8||"#"}
@@ -444,12 +446,12 @@ const J=(k,d)=>safe(()=>JSON.parse(localStorage.getItem(k)))??d;
 const W=(k,v)=>safe(()=>localStorage.setItem(k,JSON.stringify(v)));
 let me=J("session",null);
 const prof=()=>Object.assign({name:"Khách",avatar:"🍿",hist:[],fav:[]},J("u:"+(me||"_guest"),{}));
-const save=p=>W("u:"+(me||"_guest"),p);
+const save=p=>{W("u:"+(me||"_guest"),p);window.Sync&&Sync.touch()};
 const tab=t=>document.querySelectorAll("#bn a").forEach(a=>a.classList.toggle("on",a.dataset.t===t));
 const inDetail=()=>location.hash.startsWith("#/phim/");
 function favUI(){const b=$("#fv"),on=prof().fav.some(x=>x.s===cur.s&&x.slug===cur.slug);
  b.textContent=on?"♥ Đã yêu thích":"♡ Yêu thích";b.classList.toggle("pri",on);
- b.onclick=()=>{const p=prof();p.fav=on?p.fav.filter(x=>!(x.s===cur.s&&x.slug===cur.slug)):[{s:cur.s,slug:cur.slug,name:cur.m.name,thumb:cur.m.poster},...p.fav];save(p);favUI()}}
+ b.onclick=()=>{const p=prof();p.fav=on?p.fav.filter(x=>!(x.s===cur.s&&x.slug===cur.slug)):[{s:cur.s,slug:cur.slug,name:cur.m.name,thumb:cur.m.poster,t:Date.now()},...p.fav];p.ft=Date.now();save(p);favUI()}}
 async function hash(pw,salt){const d=new TextEncoder().encode(salt+pw);if(window.crypto?.subtle){const b=await crypto.subtle.digest("SHA-256",d);return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}let h=5381;for(const c of salt+pw)h=(h*33)^c.charCodeAt(0);return"x"+(h>>>0)}
 const STANDALONE=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
 let DP=null;addEventListener("beforeinstallprompt",e=>{e.preventDefault();DP=e});
@@ -475,21 +477,23 @@ function profile(){
  <div class="row" style="margin-bottom:14px"><button class="btn" data-v="${PV.view==="edit"?"main":"edit"}">Chỉnh sửa hồ sơ</button>${me?'<button class="btn" id="lo">Đăng xuất</button>':'<button class="btn pri" data-v="login">Đăng nhập / Đăng ký</button>'}</div>
  ${panel}
  <div class="panel"><div class="row"><span class="lbl">Nguồn phim</span><button class="chip ${src==="kk"?"on":""}" data-s="kk">KKPhim</button><button class="chip ${src==="ng"?"on":""}" data-s="ng">NguonC</button></div>
- ${STANDALONE?"":'<div class="row"><span class="lbl">Ứng dụng</span><button class="chip" id="inst">Thêm vào màn hình chính</button></div>'}<div class="row"><span class="lbl">Chế độ TV</span><button class="chip ${TV?"on":""}" id="tvm">${TV?"Đang bật":"Đang tắt"}</button></div><div class="row"><span class="lbl">Sao lưu</span><button class="chip" id="ex">Xuất file</button><button class="chip" id="im">Nhập file</button><input type="file" id="if" accept="application/json" hidden></div></div>
+ ${me&&window.Sync&&Sync.on()?'<div class="row"><span class="lbl">Đồng bộ</span><button class="chip" id="sy">Đồng bộ ngay</button></div><div class="row"><span class="lbl">Liên kết TV</span><input class="inp" id="tc" maxlength="6" placeholder="Mã 6 ký tự" style="width:9rem;text-transform:uppercase"><button class="chip" id="tl">Liên kết</button><span class="sub">Nhập mã hiển thị trên TV</span></div>':""}${STANDALONE?"":'<div class="row"><span class="lbl">Ứng dụng</span><button class="chip" id="inst">Thêm vào màn hình chính</button></div>'}<div class="row"><span class="lbl">Chế độ TV</span><button class="chip ${TV?"on":""}" id="tvm">${TV?"Đang bật":"Đang tắt"}</button></div><div class="row"><span class="lbl">Sao lưu</span><button class="chip" id="ex">Xuất file</button><button class="chip" id="im">Nhập file</button><input type="file" id="if" accept="application/json" hidden></div></div>
  <div class="row" style="margin-top:24px"><button class="chip ${PV.tab==="hist"?"on":""}" data-tb="hist">Lịch sử (${p.hist.length})</button><button class="chip ${PV.tab==="fav"?"on":""}" data-tb="fav">Yêu thích (${p.fav.length})</button></div>
  ${list.length?`<div class="grid" style="margin-top:18px">${list.map(card).join("")}</div>${PV.tab==="hist"?'<div class="pager"><button class="btn" id="clr">Xóa lịch sử</button></div>':""}`:`<p class="msg">${PV.tab==="fav"?"Chưa có phim yêu thích. Bấm ♡ ở trang phim để lưu lại.":"Bạn chưa xem phim nào."}</p>`}</main>`;
  const A=$("#app"),on=(q,f)=>{const el=A.querySelector(q);el&&(el.onclick=f)};
  A.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{PV.view=b.dataset.v;PV.err="";profile()});
  A.querySelectorAll("[data-tb]").forEach(b=>b.onclick=()=>{PV.tab=b.dataset.tb;profile()});
  A.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{src=b.dataset.s;safe(()=>localStorage.setItem("src",src));profile()});
- A.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{p.avatar=b.dataset.e;save(p);profile()});
- on("#ps",()=>{p.name=$("#pn").value.trim()||p.name;save(p);PV.view="main";profile()});
+ A.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{p.avatar=b.dataset.e;p.mt=Date.now();save(p);profile()});
+ on("#ps",()=>{p.name=$("#pn").value.trim()||p.name;p.mt=Date.now();save(p);PV.view="main";profile()});
  on("#pu",()=>$("#pf").click());
- const pf=$("#pf");pf&&(pf.onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=c.height=160;const m=Math.min(im.width,im.height);c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,160,160);p.avatar=c.toDataURL("image/jpeg",.82);save(p);profile()};im.src=URL.createObjectURL(f)});
- on("#lo",()=>{me=null;W("session",null);PV={view:"main",tab:"hist",err:""};profile()});
+ const pf=$("#pf");pf&&(pf.onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=c.height=160;const m=Math.min(im.width,im.height);c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,160,160);p.avatar=c.toDataURL("image/jpeg",.82);p.mt=Date.now();save(p);profile()};im.src=URL.createObjectURL(f)});
+ on("#lo",()=>{window.Sync&&Sync.logout();me=null;W("session",null);PV={view:"main",tab:"hist",err:""};profile()});
  on("#inst",async()=>{if(DP){DP.prompt();await DP.userChoice;DP=null}else alert("iPhone/iPad (Safari): bấm nút Chia sẻ rồi chọn “Thêm vào MH chính”.\nAndroid (Chrome): mở menu ⋮ rồi chọn “Cài đặt ứng dụng” hoặc “Thêm vào màn hình chính”.")});
+ on("#tl",()=>{const c=$("#tc").value.trim().toUpperCase();if(c.length<6)return toast("Nhập mã 6 ký tự đang hiện trên TV");Sync.approve(c).then(ok=>toast(ok?"Đã liên kết TV ✓":"Mã sai hoặc đã hết hạn")).catch(e=>toast(e.message))});
+ on("#sy",()=>{toast("Đang đồng bộ...");Sync.flush().then(()=>toast("Đã đồng bộ"))});
  on("#tvm",()=>{safe(()=>localStorage.setItem("tv",TV?"0":"1"));location.reload()});
- on("#clr",()=>{p.hist=[];save(p);profile()});
+ on("#clr",()=>{p.hist=[];p.hc=Date.now();save(p);profile()});
  on("#ex",()=>{const prog={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith("h:"))prog[k]=localStorage.getItem(k)}
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({app:"flix",v:1,profile:prof(),prog})],{type:"application/json"}));a.download="flix-backup-"+(me||"khach")+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e3)});
  on("#im",()=>$("#if").click());
@@ -499,6 +503,11 @@ function profile(){
  const af=$("#af");af&&(af.onsubmit=async e=>{e.preventDefault();
   const u=$("#au").value.trim().toLowerCase(),pw=$("#ap").value,users=J("users",{}),fail=m=>{PV.err=m;$("#er").textContent=m};
   if(!/^[a-z0-9_]{3,20}$/.test(u))return fail("Tên đăng nhập gồm 3–20 ký tự: chữ, số hoặc dấu _");
+  if(window.Sync&&Sync.on()){try{
+   if(pw.length<6)return fail("Mật khẩu cần ít nhất 6 ký tự");
+   if(r){if(pw!==$("#ap2").value)return fail("Mật khẩu nhập lại không khớp");const g=prof();await Sync.signup(u,pw);if(!J("u:"+u,null))W("u:"+u,{...g,name:$("#an").value.trim()||u})}
+   else await Sync.login(u,pw);
+   me=u;PV={view:"main",tab:"hist",err:""};await Sync.flush();profile()}catch(err){fail(err.message||"Lỗi kết nối")}return}
   if(r){if(users[u])return fail("Tên đăng nhập này đã có người dùng");if(pw.length<6)return fail("Mật khẩu cần ít nhất 6 ký tự");if(pw!==$("#ap2").value)return fail("Mật khẩu nhập lại không khớp");
    const salt=Math.random().toString(36).slice(2);users[u]={salt,hash:await hash(pw,salt)};W("users",users);W("u:"+u,{...prof(),name:$("#an").value.trim()||u})}
   else{const x=users[u];if(!x||x.hash!==await hash(pw,x.salt))return fail("Sai tên đăng nhập hoặc mật khẩu")}
@@ -592,6 +601,8 @@ $("#sx").onclick=()=>$("#sf").classList.remove("open");
 $("#sf").onsubmit=e=>{e.preventDefault();const q=$("#q").value.trim();if(!q)return;const t="#/tim/"+encodeURIComponent(q);location.hash===t?route():(location.hash=t);$("#q").blur()};
 addEventListener("keydown",e=>{if(e.key==="Escape")$("#sf").classList.remove("open")});
 addEventListener("scroll",()=>$("#hd").classList.toggle("solid",scrollY>40),{passive:true});
+addEventListener("syncdone",()=>{if(/^#\/ca-nhan/.test(location.hash))profile()});
+if(window.Sync&&Sync.on()&&me)Sync.flush();
 addEventListener("hashchange",route);
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 route();

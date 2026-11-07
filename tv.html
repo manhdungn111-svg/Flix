@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flix TV</title>
+<style>
+:root{--bg:#0a0c14;--s1:#151926;--s2:#1f2433;--t:#f2f3f8;--m:#8d93a8;--a:#7c5cff;--a2:#22d3ee}
+*{box-sizing:border-box;margin:0}
+html{font-size:calc(100vw/96)}
+body{background:var(--bg);color:var(--t);font:1.05rem/1.5 Inter,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+:focus{outline:none}
+#sb{position:fixed;top:0;left:0;bottom:0;width:6.2rem;z-index:20;overflow:hidden;background:#0a0c14;border-right:1px solid #ffffff12;display:flex;flex-direction:column;justify-content:center;transition:width .18s}
+#sb.o{width:17rem;background:#0d101a;box-shadow:.5rem 0 2rem #000a}
+.lg{position:absolute;top:2rem;left:1.7rem;display:flex;align-items:center;white-space:nowrap}
+.lg b{width:2.8rem;height:2.8rem;border-radius:.8rem;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.lg span{margin-left:1rem;font-size:1.8rem;font-weight:800;opacity:0}
+#sb.o .lg span,#sb.o .si span{opacity:1}
+#sb nav{padding:0 1rem}
+.si{display:flex;align-items:center;height:4.4rem;margin:.35rem 0;padding:0 1.15rem;border-radius:1rem;color:var(--m);white-space:nowrap}
+.si svg{width:2.2rem;height:2.2rem;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.si span{margin-left:1.3rem;font-size:1.3rem;font-weight:600;opacity:0}
+.si.on{color:#fff}.si.on svg{stroke:var(--a2)}
+.si:focus{background:#fff;color:#0a0c14}.si:focus svg{stroke:#0a0c14}
+.b:focus,.ep:focus,.tl:focus{background:#fff;color:#0a0c14;transform:scale(1.07)}
+.tls{display:flex;flex-wrap:wrap;padding:.4rem 3rem 0}
+.tl{display:flex;align-items:center;justify-content:center;width:15rem;height:5rem;margin:0 1rem 1rem 0;border-radius:1rem;background:var(--s2);font-size:1.25rem;font-weight:700}
+.mp{display:flex;align-items:center;padding:0 3rem 1.6rem}
+.av{width:7rem;height:7rem;border-radius:2rem;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-size:3.4rem;overflow:hidden;margin-right:1.6rem}
+.av img{width:100%;height:100%;object-fit:cover}
+.lb{color:var(--m);margin-right:1.2rem;font-size:1.2rem}
+.b{display:inline-block;padding:.9rem 2.2rem;margin-right:1rem;border-radius:99rem;font-size:1.3rem;font-weight:700;background:#ffffff26;border:0;cursor:pointer}
+.b.pri{background:linear-gradient(135deg,var(--a),#5a7bff)}
+#v{margin-left:6.2rem}
+#v.pt{padding-top:3.5rem}
+#hero{position:relative;height:38rem;background:#000}
+#hero:empty{height:8rem;background:none}
+.hb{position:absolute;top:0;left:0;right:0;bottom:0;background-size:cover;background-position:center 20%}
+.hs{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(0deg,#0a0c14 2%,#0a0c14b8 30%,#0000 65%),linear-gradient(90deg,#0a0c14d0 0,#0a0c1450 45%,#0000 75%)}
+.hc{position:absolute;left:3rem;bottom:3rem;width:50%}
+.tg{display:inline-block;background:#fff;color:#0a0c14;font-weight:700;font-size:1rem;padding:.15rem .8rem;border-radius:.5rem}
+.hc h1,.di h1{font-size:3.6rem;line-height:1.08;font-weight:800;margin:.6rem 0 .2rem}
+.mo{color:#c4c8d6;font-size:1.3rem;margin-bottom:1.4rem}
+h3{font-size:1.7rem;font-weight:700;padding:1.2rem 3rem 0}
+h2{font-size:2.2rem;padding:0 3rem 1rem}
+.rl{display:flex;overflow:hidden;padding:1.4rem 3rem 1.8rem}
+.cd{flex:none;display:block;width:11.5rem;margin-right:1.2rem}
+.po{position:relative;padding-top:150%;background:var(--s1);border-radius:.8rem;overflow:hidden;transition:transform .15s}
+.po img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+.po i{position:absolute;left:.5rem;top:.5rem;background:#0a0c14d9;border-radius:.4rem;padding:.05rem .6rem;font-size:.9rem;font-style:normal;font-weight:600}
+.cd p{margin-top:.6rem;font-size:1.05rem;font-weight:600;line-height:1.25;height:2.6em;overflow:hidden;color:#cfd3e0}
+.cd:focus .po{transform:scale(1.08);box-shadow:0 0 0 .22rem #fff,0 1rem 2rem #000a}
+.cd:focus p{color:#fff}
+.sk .po{background:var(--s2)}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(11.5rem,1fr));grid-gap:1.6rem 1.2rem;padding:1.2rem 3rem 3rem}
+.gr .cd{width:auto;margin:0}
+.ldm{padding:2rem 3rem;color:var(--m);font-size:1.3rem}
+.qi{display:block;width:60%;margin:0 3rem 1.6rem;padding:1rem 1.6rem;border-radius:1rem;border:.2rem solid #ffffff33;background:var(--s1);font-size:1.5rem}
+.qi:focus{border-color:#fff}
+#bgd{position:fixed;top:0;left:0;right:0;bottom:0;background-size:cover;background-position:center;opacity:.28;z-index:-1}
+.dt{display:flex;padding:0 3rem 1rem}
+.dp{flex:none;width:15rem;margin-right:3rem}
+.di{flex:1}
+.mt span{display:inline-block;background:var(--s2);padding:.1rem .9rem;border-radius:.5rem;font-weight:600;margin:0 .6rem .5rem 0}
+.ds{max-width:60rem;color:#c4c8d6;font-size:1.15rem;margin:.8rem 0 1.6rem;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.eps{padding:0 3rem}
+.ep{min-width:5.5rem;margin:0 .8rem .8rem 0;padding:.7rem 1.1rem;border-radius:.7rem;background:var(--s2);border:0;font-size:1.15rem;font-weight:600;cursor:pointer}
+.ep.on{background:var(--a)}
+#pl{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:50}
+#pl[hidden]{display:none}
+.pv,.pv video,.pv iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;background:#000}
+.os{position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;transition:opacity .25s;background:linear-gradient(#000b,#0000 30%,#0000 62%,#000d);display:flex;flex-direction:column;justify-content:space-between;padding:3rem;pointer-events:none}
+#pl.on .os{opacity:1}
+.ot b{font-size:2rem;display:block}.ot span{color:#cfd3e0;font-size:1.3rem}
+.bar{height:.5rem;background:#ffffff44;border-radius:1rem;overflow:hidden}
+#pb{display:block;height:100%;width:0;background:var(--a2)}
+.ot2{display:flex;justify-content:space-between;margin-top:.8rem;font-size:1.1rem;color:#cfd3e0}
+#ts{position:fixed;left:50%;bottom:3rem;transform:translateX(-50%);background:#000e;padding:.8rem 1.6rem;border-radius:1rem;z-index:60;font-size:1.1rem}
+#ts:empty{display:none}
+.code{font-size:5.4rem;letter-spacing:.9rem;font-weight:800;color:var(--a2);padding:.4rem 0 .8rem}
+</style>
+</head>
+<body>
+<div id="sb"><div class="lg"><b>▶</b><span>Flix</span></div><nav>
+<a class="si" href="#/s" data-k="s"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Tìm kiếm</span></a>
+<a class="si" href="#/" data-k=""><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Trang chủ</span></a>
+<a class="si" href="#/c/phim-bo" data-k="c/phim-bo"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg><span>Phim bộ</span></a>
+<a class="si" href="#/c/phim-le" data-k="c/phim-le"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16M16 4v16M3 12h18"/></svg><span>Phim lẻ</span></a>
+<a class="si" href="#/g" data-k="g"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg><span>Thể loại</span></a>
+<a class="si" href="#/me" data-k="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span>Cá nhân</span></a>
+</nav></div>
+<div id="v"></div>
+<div id="pl" hidden></div>
+<div id="ts"></div>
+<script src="sync.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js"></script>
+<script>
+(function(){
+var $=function(s){return document.querySelector(s)};
+var esc=function(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
+var strip=function(h){return String(h||"").replace(/<[^>]+>/g,"").trim()};
+var img=function(u){return !u?"":/^https?:/.test(u)?u:"https://phimimg.com/"+u.replace(/^\//,"")};
+var get=function(u){return fetch(u).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})};
+var J=function(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v===null||v===undefined?d:v}catch(e){return d}};
+var W=function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+var src=(function(){try{return localStorage.getItem("src")==="ng"?"ng":"kk"}catch(e){return"kk"}})();
+var v=$("#v"),pl=$("#pl"),HT=0,MORE=null,P=null,V=null,hls=null,OT,lastSave=0,PT;
+function toast(m){var t=$("#ts");t.textContent=m;setTimeout(function(){t.textContent=""},3000)}
+function fmt(t){t=isFinite(t)?Math.floor(t):0;var h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return(h?h+":"+(m<10?"0":"")+m:m)+":"+(s<10?"0":"")+s}
+
+/* ---------- Dữ liệu người dùng (dùng chung với bản web) ---------- */
+function ukey(){return"u:"+(J("session",null)||"_guest")}
+function U(){var d=J(ukey(),{});d.hist=d.hist||[];d.fav=d.fav||[];return d}
+
+function SV(d){W(ukey(),d);if(window.Sync)Sync.touch()}
+/* ---------- API ---------- */
+function kkN(it,pg){return{pages:pg||1,items:(it||[]).map(function(i){return{slug:i.slug,name:i.name,origin:i.origin_name,thumb:img(i.thumb_url||i.poster_url),back:img(i.poster_url),tag:i.episode_current||i.quality||""}})}}
+var API={
+kk:{list:function(cat,page,q,f){
+  f=f||{};var u,g=f.g,c=f.c,y=f.y;
+  if(q)u="https://phimapi.com/v1/api/tim-kiem?keyword="+encodeURIComponent(q)+"&limit=24&page="+page;
+  else if(cat==="moi"&&!(g||c||y))return get("https://phimapi.com/danh-sach/phim-moi-cap-nhat?page="+page).then(function(j){return kkN(j.items,j.pagination&&j.pagination.totalPages)});
+  else if(cat==="moi")u="https://phimapi.com/v1/api/"+(g?"the-loai/"+g:c?"quoc-gia/"+c:"nam/"+y)+"?page="+page+"&limit=24";
+  else u="https://phimapi.com/v1/api/danh-sach/"+cat+"?page="+page+"&limit=24"+(c?"&country="+c:"");
+  return get(u).then(function(j){var p=j.data.params;return kkN(j.data.items,p&&p.pagination&&p.pagination.totalPages)})},
+ detail:function(slug){return get("https://phimapi.com/phim/"+slug).then(function(j){var m=j.movie;return{name:m.name,origin:m.origin_name,desc:strip(m.content),poster:img(m.thumb_url),back:img(m.poster_url),meta:[m.year,m.quality,m.lang,m.time].filter(Boolean),
+  servers:(j.episodes||[]).map(function(s){return{name:s.server_name,eps:s.server_data.map(function(e){return{name:e.name,embed:e.link_embed,m3u8:e.link_m3u8}})}})}})}},
+ng:{list:function(cat,page,q,f){
+  f=f||{};var g=f.g,c=f.c,y=f.y,b="https://phim.nguonc.com/api/films/",u;
+  if(q)u=b+"search?keyword="+encodeURIComponent(q)+"&page="+page;
+  else if(g||c||y)u=b+(g?"the-loai/"+g:c?"quoc-gia/"+c:"nam-phat-hanh/"+y)+"?page="+page;
+  else if(cat==="moi")u=b+"phim-moi-cap-nhat?page="+page;
+  else u=b+"danh-sach/"+cat+"?page="+page;
+  return get(u).then(function(j){return{pages:(j.paginate&&j.paginate.total_page)||1,items:(j.items||[]).map(function(i){return{slug:i.slug,name:i.name,origin:i.original_name,thumb:img(i.thumb_url||i.poster_url),back:img(i.poster_url),tag:i.current_episode||i.quality||""}})}})},
+ detail:function(slug){return get("https://phim.nguonc.com/api/film/"+slug).then(function(j){var m=j.movie;return{name:m.name,origin:m.original_name,desc:strip(m.description),poster:img(m.thumb_url||m.poster_url),back:img(m.poster_url),meta:[m.quality,m.language,m.time].filter(Boolean),
+  servers:(m.episodes||[]).map(function(s){return{name:s.server_name,eps:(s.items||[]).map(function(e){return{name:e.name,embed:e.embed,m3u8:e.m3u8}})}})}})}}
+};
+var ROWS=[["Phim mới nhất",function(){return API[src].list("moi",1,"")}],
+["Phim bộ",function(){return API[src].list("phim-bo",1,"")}],
+["Phim lẻ",function(){return API[src].list("phim-le",1,"")}],
+["Hoạt hình",function(){return API[src].list("hoat-hinh",1,"")}],
+["Phim Nhật Bản",function(){return API[src].list("moi",1,"",{c:"nhat-ban"})}],
+["Phim Trung Quốc",function(){return API[src].list("moi",1,"",{c:"trung-quoc"})}],
+["Phim Hàn Quốc",function(){return API[src].list("moi",1,"",{c:"han-quoc"})}]];
+var CT={"phim-bo":"Phim bộ","phim-le":"Phim lẻ","hoat-hinh":"Hoạt hình"};
+
+/* ---------- Giao diện ---------- */
+function card(i){var s=i.s||src,tag=i.ep?"Tập "+i.ep:i.tag;
+ return'<a class="cd" href="#/p/'+s+'/'+esc(i.slug)+'"><div class="po"><img src="'+esc(i.thumb)+'" alt="">'+(tag?'<i>'+esc(tag)+'</i>':"")+'</div><p>'+esc(i.name)+'</p></a>'}
+var SK='<div class="cd sk"><div class="po"></div></div>';SK=SK+SK+SK+SK+SK+SK+SK+SK;
+var ld=function(t){return'<p class="ldm">'+t+'</p>'};
+function heroH(f){return'<div class="hb" style="background-image:url(\''+esc(f.back||f.thumb)+'\')"></div><div class="hs"></div><div class="hc"><span class="tg">Nổi bật</span><h1>'+esc(f.name)+'</h1><p class="mo">'+esc(f.origin)+'</p><a class="b pri" data-af href="#/p/'+src+'/'+esc(f.slug)+'">▶ Xem ngay</a></div>'}
+
+function home(){
+ var u=U(),t=++HT;
+ var lr=function(n,a){return a.length?'<section><h3>'+n+'</h3><div class="rl">'+a.slice(0,20).map(card).join("")+'</div></section>':""};
+ v.className="";
+ v.innerHTML='<div id="hero"></div>'+lr("Tiếp tục xem",u.hist)+lr("Yêu thích",u.fav)+ROWS.map(function(r,i){return'<section id="r'+i+'"><h3>'+r[0]+'</h3><div class="rl">'+SK+'</div></section>'}).join("");
+ ROWS.forEach(function(r,i){r[1]().then(function(x){
+  if(t!==HT)return;var s=$("#r"+i);if(!s)return;
+  if(!x.items.length){s.parentNode.removeChild(s);return}
+  if(i===0)$("#hero").innerHTML=heroH(x.items[0]);
+  s.querySelector(".rl").innerHTML=x.items.slice(0,20).map(card).join("")
+ }).catch(function(e){if(t!==HT)return;var s=$("#r"+i);if(s)s.querySelector(".rl").innerHTML=ld("Không tải được ("+esc(e.message)+")")})});
+}
+function grid(box,loader){
+ box.innerHTML='<div class="gr"></div><p class="ldm" id="ld"></p>';
+ var pg=0,tot=1,busy=false,t=HT;
+ MORE=function(){if(busy||pg>=tot)return;busy=true;
+  loader(pg+1).then(function(r){if(t!==HT)return;pg++;tot=r.pages;
+   box.querySelector(".gr").insertAdjacentHTML("beforeend",r.items.map(card).join(""));
+   if(pg===1&&!r.items.length)$("#ld").textContent="Không có phim nào.";busy=false;
+   if(pg===1&&r.items.length&&r.items.length<12)MORE()
+  }).catch(function(e){busy=false;if(t===HT)$("#ld").textContent="Không tải được ("+e.message+")"})};
+ MORE();
+}
+function cat(c){v.className="pt";v.innerHTML='<h2>'+(CT[c]||"Danh sách")+'</h2><div id="gb"></div>';grid($("#gb"),function(p){return API[src].list(c,p,"")})}
+function search(q){
+ v.className="pt";
+ v.innerHTML='<input class="qi" id="q" data-af placeholder="Nhập tên phim rồi bấm OK" value="'+esc(q)+'"><div id="gb"></div>';
+ $("#q").onkeydown=function(e){if(e.key==="Enter"){var x=this.value.trim();if(x){location.hash==="#/s/"+encodeURIComponent(x)?route():(location.hash="#/s/"+encodeURIComponent(x));this.blur()}}};
+ if(q)grid($("#gb"),function(p){return API[src].list("moi",p,q)});
+}
+var GEN=[["hanh-dong","Hành động"],["tinh-cam","Tình cảm"],["hai-huoc","Hài hước"],["co-trang","Cổ trang"],["tam-ly","Tâm lý"],["hinh-su","Hình sự"],["chien-tranh","Chiến tranh"],["the-thao","Thể thao"],["vo-thuat","Võ thuật"],["vien-tuong","Viễn tưởng"],["phieu-luu","Phiêu lưu"],["khoa-hoc","Khoa học"],["kinh-di","Kinh dị"],["am-nhac","Âm nhạc"],["than-thoai","Thần thoại"],["tai-lieu","Tài liệu"],["gia-dinh","Gia đình"],["chinh-kich","Chính kịch"],["bi-an","Bí ẩn"],["hoc-duong","Học đường"]];
+var COU=[["han-quoc","Hàn Quốc"],["trung-quoc","Trung Quốc"],["au-my","Âu Mỹ"],["nhat-ban","Nhật Bản"],["thai-lan","Thái Lan"],["viet-nam","Việt Nam"],["dai-loan","Đài Loan"],["hong-kong","Hồng Kông"],["an-do","Ấn Độ"]];
+var FLAG={"han-quoc":"🇰🇷","trung-quoc":"🇨🇳","au-my":"🇺🇸","nhat-ban":"🇯🇵","thai-lan":"🇹🇭","viet-nam":"🇻🇳","dai-loan":"🇹🇼","hong-kong":"🇭🇰","an-do":"🇮🇳"};
+var YRS=[];for(var yy=2026;yy>2014;yy--)YRS.push([String(yy),String(yy)]);
+function gen(){
+ v.className="pt";
+ var t=function(k,a,fl){return'<div class="tls">'+a.map(function(x){return'<a class="tl" href="#/l/'+k+'/'+x[0]+'">'+(fl&&FLAG[x[0]]?FLAG[x[0]]+" ":"")+x[1]+'</a>'}).join("")+'</div>'};
+ v.innerHTML='<h2>Thể loại</h2>'+t("g",GEN)+'<h2 style="padding-top:1.5rem">Quốc gia</h2>'+t("c",COU,1)+'<h2 style="padding-top:1.5rem">Năm phát hành</h2>'+t("y",YRS);
+}
+function lst(k,val){
+ var arr=k==="g"?GEN:k==="c"?COU:YRS,nm=val;arr.forEach(function(x){if(x[0]===val)nm=x[1]});
+ v.className="pt";v.innerHTML='<h2>'+(k==="g"?"Thể loại: ":k==="c"?"Quốc gia: ":"Năm: ")+esc(nm)+'</h2><div id="gb"></div>';
+ grid($("#gb"),function(p){var f={};f[k]=val;return API[src].list("moi",p,"",f)});
+}
+function me(){
+ var u=U(),av=u.avatar||"🍿",ses=J("session",null),cl=window.Sync&&Sync.on();v.className="pt";
+ var rl=function(n,a){return'<h3>'+n+' ('+a.length+')</h3>'+(a.length?'<div class="rl">'+a.slice(0,30).map(card).join("")+'</div>':'<p class="ldm">Chưa có phim nào.</p>')};
+ var acct;
+ if(!cl)acct='<p class="ldm" style="padding-top:0">Chưa bật đồng bộ đám mây (điền Supabase trong sync.js).</p>';
+ else if(ses)acct='<div class="eps" style="padding-bottom:1rem"><button class="ep" id="sy" data-af>Đồng bộ ngay</button><button class="ep" id="lo">Đăng xuất</button></div>';
+ else acct='<div class="eps" style="padding-bottom:1rem"><button class="ep" id="lc" data-af>Đăng nhập bằng điện thoại</button></div><div id="lcb"></div>';
+ v.innerHTML='<div class="mp"><div class="av">'+(String(av).indexOf("data:")===0?'<img src="'+av+'" alt="">':esc(av))+'</div><div><h2 style="padding:0">'+esc(u.name||"Khách")+'</h2><p class="mo" style="margin:0">'+(ses?"@"+esc(ses):"Chưa đăng nhập")+'</p></div></div>'+acct
+  +'<div class="eps" style="padding-bottom:1rem"><span class="lb">Nguồn phim</span><button class="ep'+(src==="kk"?" on":"")+'" data-s="kk">KKPhim</button><button class="ep'+(src==="ng"?" on":"")+'" data-s="ng">NguonC</button><button class="ep" id="clr">Xóa lịch sử</button></div>'
+  +rl("Lịch sử xem",u.hist)+rl("Yêu thích",u.fav);
+ [].forEach.call(v.querySelectorAll("[data-s]"),function(b){b.onclick=function(){src=b.getAttribute("data-s");try{localStorage.setItem("src",src)}catch(e){}me()}});
+ $("#clr").onclick=function(){var x=U();x.hist=[];x.hc=Date.now();SV(x);me()};
+ if($("#lc"))$("#lc").onclick=function(){var b=$("#lcb");b.innerHTML=ld("Đang tạo mã...");
+  Sync.tvStart().then(function(code){
+   b.innerHTML='<div style="padding:0 3rem 1.4rem"><p class="mo" style="margin-bottom:.6rem">Trên điện thoại: mở Flix → Cá nhân → Liên kết TV → nhập mã:</p><div class="code">'+code+'</div><p class="ldm" style="padding:0">Đang chờ bạn nhập mã (mã có hiệu lực 10 phút)…</p></div>';
+   var n=0;clearInterval(PT);PT=setInterval(function(){
+    if(++n>200||location.hash!=="#/me"){clearInterval(PT);return}
+    Sync.tvPoll().then(function(x){if(x){clearInterval(PT);Sync.flush().then(function(){me()})}}).catch(function(){})},3000)
+  }).catch(function(e){b.innerHTML=ld(esc(e.message))})};
+ if($("#sy"))$("#sy").onclick=function(){toast("Đang đồng bộ...");Sync.flush().then(function(){toast("Đã đồng bộ");me()})};
+ if($("#lo"))$("#lo").onclick=function(){Sync.logout();W("session",null);me()};
+}
+function detail(s,slug){
+ src=s;v.className="pt";v.innerHTML=ld("Đang tải phim...");var t=HT;
+ API[s].detail(slug).then(function(m){
+  if(t!==HT)return;
+  if(!m.servers.length)throw new Error("Phim chưa có tập nào");
+  var sv=J("tvl:"+s+slug,null),has=!!sv;sv=sv||{si:0,ei:0};
+  if(!m.servers[sv.si]||!m.servers[sv.si].eps[sv.ei])sv={si:0,ei:0};
+  var cs=sv.si;
+  var isFav=function(){return U().fav.some(function(x){return x.s===s&&x.slug===slug})};
+  v.innerHTML='<div id="bgd" style="background-image:url(\''+esc(m.back||m.poster)+'\')"></div><div class="dt"><div class="dp"><div class="po"><img src="'+esc(m.poster)+'" alt=""></div></div><div class="di"><h1>'+esc(m.name)+'</h1><p class="mo">'+esc(m.origin)+'</p><div class="mt">'+m.meta.map(function(x){return'<span>'+esc(x)+'</span>'}).join("")+'</div><p class="ds">'+esc(m.desc)+'</p>'
+   +'<button class="b pri" id="pp" data-af>'+(has?"▶ Phát tiếp tập "+esc(m.servers[sv.si].eps[sv.ei].name):"▶ Xem phim")+'</button><button class="b" id="fv"></button></div></div><div id="svs" class="eps"></div><h3>Danh sách tập</h3><div id="eps" class="eps" style="padding-top:1rem"></div>';
+  $("#pp").onclick=function(){openP(m,s,slug,sv.si,sv.ei)};
+  var fv=function(){$("#fv").textContent=isFav()?"♥ Đã yêu thích":"♡ Yêu thích"};fv();
+  $("#fv").onclick=function(){var u=U();u.fav=isFav()?u.fav.filter(function(x){return!(x.s===s&&x.slug===slug)}):[{s:s,slug:slug,name:m.name,thumb:m.poster,t:Date.now()}].concat(u.fav);u.ft=Date.now();SV(u);fv()};
+  var draw=function(){
+   $("#svs").innerHTML=m.servers.length>1?m.servers.map(function(x,i){return'<button class="ep'+(i===cs?" on":"")+'" data-i="'+i+'">'+esc(x.name)+'</button>'}).join(""):"";
+   $("#eps").innerHTML=m.servers[cs].eps.map(function(x,i){return'<button class="ep" data-e="'+i+'">'+esc(x.name)+'</button>'}).join("");
+   [].forEach.call($("#svs").querySelectorAll(".ep"),function(b){b.onclick=function(){cs=+b.getAttribute("data-i");draw()}});
+   [].forEach.call($("#eps").querySelectorAll(".ep"),function(b){b.onclick=function(){openP(m,s,slug,cs,+b.getAttribute("data-e"))}})};
+  draw();
+ }).catch(function(e){if(t===HT)v.innerHTML=ld("Không mở được phim: "+esc(e.message))+'<a class="b" data-af href="#/">← Về trang chủ</a>'});
+}
+
+/* ---------- Trình phát ---------- */
+function osd(){pl.className="on";clearTimeout(OT);OT=setTimeout(function(){pl.className=""},4000)}
+function openP(m,s,slug,si,ei){
+ stopMedia();
+ P={m:m,s:s,slug:slug,si:si,ei:ei};
+ var e=m.servers[si].eps[ei],key="tp:"+s+slug+":"+si+":"+ei;
+ W("tvl:"+s+slug,{si:si,ei:ei});
+ var u=U();u.hist=u.hist.filter(function(x){return!(x.s===s&&x.slug===slug)});u.hist.unshift({s:s,slug:slug,name:m.name,thumb:m.poster,ep:e.name,t:Date.now()});u.hist=u.hist.slice(0,60);SV(u);
+ pl.hidden=false;
+ pl.innerHTML='<div class="pv"></div><div class="os"><div class="ot"><b>'+esc(m.name)+'</b><span>Tập '+esc(e.name)+'</span></div><div><div class="bar"><i id="pb"></i></div><div class="ot2"><span id="tm">0:00 / 0:00</span><span>◀ ▶ Tua 10s · ▲ Tập trước · ▼ Tập sau · OK Phát/Dừng · Back Thoát</span></div></div></div>';
+ var box=pl.firstChild;
+ var embed=function(){V=null;if(hls){hls.destroy();hls=null}box.innerHTML='<iframe src="'+esc(e.embed)+'" allowfullscreen allow="autoplay; fullscreen; encrypted-media"></iframe>'};
+ if(e.m3u8){
+  box.innerHTML='<video autoplay playsinline></video>';var vd=V=box.firstChild;
+  var fb=function(){if(V!==vd||!e.embed)return;toast("Nguồn HLS lỗi, chuyển sang trình phát nhúng");embed()};
+  vd.onerror=fb;var to=setTimeout(fb,15000);
+  vd.onloadeddata=function(){clearTimeout(to);var t=J(key,0);if(t>10&&vd.duration&&t<vd.duration-30)vd.currentTime=t};
+  vd.ontimeupdate=function(){if(!vd.duration)return;$("#pb").style.width=(vd.currentTime/vd.duration*100)+"%";$("#tm").textContent=fmt(vd.currentTime)+" / "+fmt(vd.duration);
+   if(Date.now()-lastSave>5000){lastSave=Date.now();W(key,vd.currentTime)}};
+  vd.onpause=vd.onplay=osd;
+  vd.onended=function(){W(key,0);nextEp(1)};
+  if(vd.canPlayType("application/vnd.apple.mpegurl")&&!window.Hls)vd.src=e.m3u8;
+  else if(window.Hls&&Hls.isSupported()){hls=new Hls();hls.loadSource(e.m3u8);hls.attachMedia(vd);hls.on(Hls.Events.ERROR,function(_,d){if(d.fatal)fb()})}
+  else vd.src=e.m3u8;
+  var pr=vd.play();if(pr&&pr.catch)pr.catch(function(){});
+ }else if(e.embed)embed();
+ else box.innerHTML=ld("Tập này chưa có link phát.");
+ osd();
+}
+function stopMedia(){if(hls){hls.destroy();hls=null}if(V){try{V.pause()}catch(e){}}V=null}
+function nextEp(d){if(!P)return;var n=P.ei+d;if(n<0||n>=P.m.servers[P.si].eps.length){if(d>0)closeP();return}openP(P.m,P.s,P.slug,P.si,n)}
+function closeP(){
+ if(V&&P&&V.currentTime)W("tp:"+P.s+P.slug+":"+P.si+":"+P.ei,V.currentTime);
+ stopMedia();P=null;pl.hidden=true;pl.innerHTML="";
+ if(/^#\/p\//.test(location.hash))route()
+}
+function seek(d){if(V&&V.duration){V.currentTime=Math.max(0,Math.min(V.duration,V.currentTime+d))}osd()}
+
+/* ---------- Điều hướng bằng remote ---------- */
+var FOCI='a[href],button,input,[data-af]';
+function vis(e){var r=e.getBoundingClientRect();return r.width>0&&r.height>0}
+function foc(el){el.focus();try{if(!el.closest("#sb"))el.scrollIntoView({block:"center",inline:"center",behavior:"smooth"})}catch(x){el.scrollIntoView()}}
+function nav(dir){
+ var cur=document.activeElement,els=[].filter.call(document.querySelectorAll(FOCI),function(e){return!e.disabled&&vis(e)});
+ if(!cur||cur===document.body||els.indexOf(cur)<0){var f=$("[data-af]")||els[0];if(f)foc(f);return}
+ var c=cur.getBoundingClientRect(),cx=c.left+c.width/2,cy=c.top+c.height/2,best=null,bs=1e9;
+ els.forEach(function(el){if(el===cur)return;var r=el.getBoundingClientRect(),dx=r.left+r.width/2-cx,dy=r.top+r.height/2-cy,m,x;
+  if(dir==="R"&&dx>8){m=dx;x=Math.abs(dy)}else if(dir==="L"&&dx<-8){m=-dx;x=Math.abs(dy)}else if(dir==="D"&&dy>8){m=dy;x=Math.abs(dx)}else if(dir==="U"&&dy<-8){m=-dy;x=Math.abs(dx)}else return;
+  var sc=m+x*2.5;if(sc<bs){bs=sc;best=el}});
+ if(best)foc(best)}
+document.addEventListener("focusin",function(e){
+ $("#sb").className=e.target.closest&&e.target.closest("#sb")?"o":"";
+ var cd=e.target.closest&&e.target.closest(".cd"),g=cd&&cd.parentNode;
+ if(MORE&&g&&g.className==="gr"&&[].indexOf.call(g.children,cd)>=g.children.length-12)MORE()});
+document.addEventListener("keydown",function(e){
+ var k=e.key,c=e.keyCode,a=document.activeElement,typing=a&&a.tagName==="INPUT";
+ var back=k==="Escape"||k==="BrowserBack"||c===10009||c===461||(k==="Backspace"&&!typing);
+ if(P){
+  e.preventDefault();osd();
+  if(back||c===413||k==="MediaStop"){closeP();return}
+  if(k==="ArrowUp"){nextEp(-1);return}
+  if(k==="ArrowDown"){nextEp(1);return}
+  if(!V)return;
+  if(c===415||k==="MediaPlay"){V.play();return}
+  if(c===19||k==="MediaPause"){V.pause();return}
+  if(k==="Enter"||k===" "||c===10252||k==="MediaPlayPause"){V.paused?V.play():V.pause();return}
+  if(k==="ArrowRight"){seek(e.repeat?30:10);return}
+  if(k==="ArrowLeft"){seek(e.repeat?-30:-10);return}
+  if(c===417||k==="MediaFastForward"){seek(30);return}
+  if(c===412||k==="MediaRewind"){seek(-30);return}
+  return}
+ if(back){e.preventDefault();var inSb=a&&a.closest&&a.closest("#sb");
+  if(/^#?\/?(c\/[^/]+|g|me|s)?$/.test(location.hash)){if(!inSb){var s0=$(".si.on")||$(".si");if(s0)foc(s0)}}else history.back();return}
+ var D={ArrowRight:"R",ArrowLeft:"L",ArrowDown:"D",ArrowUp:"U"}[k];
+ if(!D||(typing&&(D==="L"||D==="R")))return;
+ e.preventDefault();nav(D)});
+try{if(window.tizen&&tizen.tvinputdevice)tizen.tvinputdevice.registerKeyBatch(["MediaPlay","MediaPause","MediaPlayPause","MediaFastForward","MediaRewind","MediaStop"])}catch(x){}
+setInterval(function(){if(P)return;var a=document.activeElement;if(a&&a!==document.body)return;
+ var t=$("[data-af]")||$(".cd")||$(".tl")||$(".ep")||$(".si");if(t)foc(t)},800);
+
+/* ---------- Router ---------- */
+function route(){
+ clearInterval(PT);stopMedia();P=null;pl.hidden=true;MORE=null;HT++;window.scrollTo(0,0);
+ var p=location.hash.replace(/^#\/?/,"").split("/"),k="";
+ if(p[0]==="c")k="c/"+p[1];else if(p[0]==="s")k="s";else if(p[0]==="g"||p[0]==="l")k="g";else if(p[0]==="me")k="me";
+ [].forEach.call(document.querySelectorAll(".si"),function(a){a.className="si"+(a.getAttribute("data-k")===k?" on":"")});
+ if(p[0]==="p"&&p[1]&&p[2])detail(p[1]==="ng"?"ng":"kk",decodeURIComponent(p[2]));
+ else if(p[0]==="c")cat(p[1]);
+ else if(p[0]==="s")search(decodeURIComponent(p[1]||""));
+ else if(p[0]==="g")gen();
+ else if(p[0]==="l")lst(p[1],decodeURIComponent(p[2]||""));
+ else if(p[0]==="me")me();
+ else home();
+}
+window.addEventListener("syncdone",function(){if(location.hash==="#/me")me()});
+if(window.Sync&&Sync.on()&&J("session",null))Sync.flush();
+window.addEventListener("hashchange",route);
+route();
+})();
+</script>
+</body>
+</html>
